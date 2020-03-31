@@ -1,0 +1,113 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Prince Gupta">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        WFH
+    </title>
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-ixon"/>
+    <link rel="stylesheet" href="{% static 'stylesheet/animate.css' %}" />
+    <script src="{% static 'js/font_awesome.js' %}"></script>
+    <link href="{% static 'stylesheet/bootstrap.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora|Roboto&display=swap" rel="stylesheet">
+
+    <style>
+        .picture_uploader::-webkit-file-upload-button{
+            visibility: hidden;
+        }
+        .picture_uploader{
+            content: 'Select Your Profile Picture';
+            text-align: center;
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #000;
+            border-radius: 40px;
+            padding: 5px 5px;
+            outline: none;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            cursor: pointer;
+            text-shadow: 1px 1px #fff;
+            font-weight: 700;
+            font-size: 1em;
+        }
+        .picture_uploader:hover::before{
+            border-color: black;
+        }
+        .picture_uploader:active::before{
+            background: #000;
+        }
+        body{
+        padding: 50px 340px;
+        }
+
+        @media(max-width: 990px){
+            .picture_uploader{
+                text-align: center;
+                width: 100% !important;
+                padding: 5px 5px !important;
+            }
+            body{
+                padding: 50px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container text-center">
+            <div class="section services_form">
+                <h1>Publish Your Services Now...</h1><br>
+                <form method="POST" enctype="multipart/form-data" id="s_btn" action="{% url 'create_s' pk_create=user.username %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="pk" value="{{ s.id }}{{ port }}" id="pk_field" class="form-control text-center" style="display: none">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" value="{{ s.title }}" name="title" id="title_field" class="form-control text-center" placeholder="I will do....">
+                    </div>
+                    <div class="form-group">
+                        <label for="slt_category">Select Category</label>
+                        <select class="form-control" id="slt_category">
+                              <option>Video Editing</option>
+                              <option>Web Design</option>
+                              <option>Graphic Designing</option>
+                              <option>SEO</option>
+                              <option>Writing</option>
+                              <option>Etc.....</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" value="{{ s.category }}" name="category" id="category_field" class="category_field form-control text-center" placeholder="Graphic Designing, Programming....">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="tags" value="{{ s.tags }}" id="tags_field" class="form-control text-center" placeholder="Tags...(Upto 5 max)">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="pricing" required value="{{ s.pricing }}" id="pricing_field" class="form-control text-center" placeholder="Price Of Your Service">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="description" value="{{ s.description }}" id="description_field" class="form-control text-center" placeholder="Description...">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="publish" id="publish_field" class="form-control text-center" value="1" style="display: none">
+                    </div>
+                    <div class="form-group text-center">
+                        <input type="file" required name="pone" value="{{ s.pic_first.url }}" class="picture_uploader" />
+                    </div>
+                    <div class="form-group text-center">
+                        <input type="file" required class="picture_uploader" name="p_two" value="{{ s.pic_first.url }}"/>
+                    </div>
+                    <div class="form-group text-center">
+                        <input type="file" required class="picture_uploader" name="p_three" value="{{ s.pic_first.url }}"/>
+                    </div>
+                    <button type="submit" class="publish_btn btn btn-outline-success">Publish</button>
+                </form><br><br>
+            </div>
+        </div>
+<script>
+    document.getElementsByClassName(".picture_uploader").required;
+</script>
+</body>
+</html>

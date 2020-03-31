@@ -1,0 +1,114 @@
+{% extends 'work_for_hire/seller/base.html' %}
+{% block navbar %}
+    {% load static %}
+<style>
+body{
+    padding: 40px 20px;
+}
+.imgs{
+    width: 40%;
+    height: 5em;
+    border: 2px solid white;
+    border-radius: 10px;
+}
+.profile_imgs{
+    border-radius: 50%;
+    width: 30%;
+}
+.card{
+    margin: 20px !important;
+}
+.portfolio_id{
+    text-align: center;
+    margin: 5rem;
+}
+
+.card-img-top{
+    border: 10px;
+}
+.card-footer{
+    background-color: white !important;
+}
+.card-title{
+
+}
+</style>
+    <div class="container services_card">
+        <div class="row">
+        {% for srv in s %}
+            <div class="card" style="width: 20rem;">
+                    {% if srv.pic_first %}
+                        <img class="card-img-top" src='{{ srv.pic_first.url }}'/>
+                    {% else %}
+                        <img class="card-img-top" src='{% static 'img/logo.png' %}'/>
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <div class="card-title text-center">
+                            <b><a>{{ srv.title }}</a></b>
+                        </div><br>
+                        {% if srv.pic_first %}
+                            <img class="imgs text-center" src='{{ srv.pic_third.url }}'/>&nbsp;
+                            <img class="imgs text-center" src='{{ srv.pic_second.url }}'/>
+                        {% else %}
+                            <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>&nbsp;
+                            <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer text-center">
+                        <b>$&nbsp;{{ srv.pricing }}</b><br><hr>
+                        <a class="edit_service fa fa-edit" href="{% url 'update_services' su_pk=srv.id %}"></a>&nbsp;
+                        <a class="edit_service fa fa-trash-alt" href="{% url 'delete_services' su_pk=srv.id %}"></a>
+                    </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+        {#$('.services_show').click(function (e) {#}
+        {#    e.preventDefault();#}
+        {#    $('.services_card').empty();#}
+        {#    nav();#}
+        {#    inout('#portfolio_form');#}
+        {#    inout('.portfolio_id');#}
+        {#    outin('.context_btn');#}
+        {#    outin('.services_card');#}
+        {#$.ajax({#}
+        {#    url:"{% url 'services_show' u_id=user.username %}",#}
+        {#    type: "GET",#}
+        {#    enctype : "multipart/form-data",#}
+        {#    success: function(data) {#}
+        {#        console.log(data);#}
+        {#        let service_details = JSON.parse(data);#}
+        {#        let i = 0;#}
+        {#        while(i < service_details.length){#}
+        {#            $('.services_card').append('<div class="card" style="width: 18rem;">'#}
+        {#                +'<img class="card-img-top" src='+/media/+ service_details[i]["fields"]["pic_first"] + '/>'#}
+        {#                + '<div class="card-body">'+'<div class="card-title text-center"><b>' + service_details[i]["fields"]["title"] + '</b></div><br>'#}
+        {##}
+        {#                +'<img class="imgs text-center" src='+/media/+ service_details[i]["fields"]["pic_second"] + '/>&nbsp;'#}
+        {#                +'<img class="imgs text-center" src='+/media/+ service_details[i]["fields"]["pic_third"] + '/></div>'#}
+        {##}
+        {#                + '<a class="srv_pk">' + service_details[i]["pk"] + '</a>'#}
+        {#                +'<div class="card-footer text-center"><b>$&nbsp;' + service_details[i]["fields"]["pricing"] + '</b></div>'#}
+        {#                +'<a class="edit_service fa fa-edit"></a>');#}
+        {#            i = i+1;}#}
+        {##}
+        {#    }#}
+        {#    });});#}
+        {#$.ajax({#}
+        {#    url:"{% url 'portfolio_show' u_id=user.username %}",#}
+        {#    type: "GET",#}
+        {#    enctype : "multipart/form-data",#}
+        {#    success: function(data) {#}
+        {#        console.log(data);#}
+        {#        let port_details = JSON.parse(data);#}
+        {#        let i = 0;#}
+        {#        while(i < port_details.length){#}
+        {#            $('.portfolio_id').append('<img class="profile_imgs" src='+/media/+ port_details[i]["fields"]["picture"] + '/>'#}
+        {#                +'<h1>' + port_details[i]["fields"]["user_id"] + '</h1>'#}
+        {#                +'<h3>' + port_details[i]["fields"]["skills"] + '</h3>'#}
+        {#                +'<h3>' + port_details[i]["fields"]["country"] + '</h3>'#}
+        {#                +'<h3>' + port_details[i]["fields"]["degree"] + '</h3>'#}
+        {#                +'<h3>' + port_details[i]["fields"]["certification"]+ '</h3>');#}
+        {#            i = i+1;}#}
+        {#    });#}
+{% endblock %}

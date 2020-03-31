@@ -1,0 +1,285 @@
+{% extends 'work_for_hire/seller/base.html' %}
+{% block navbar %}{% load static %}
+<style>
+.imgs{
+    width: 40%;
+    margin-top: 10% !important;
+}
+a:hover{
+    color: white;
+    text-decoration: none !important;
+}
+.btn{
+    margin-top: 2% !important;
+}
+
+.require_submit{
+    text-align: center;
+    width: 30%;
+    border-radius: 20px;
+    top: 35%;
+    left: 35%;
+    right: 35%;
+    padding: 40px;
+    position: absolute;
+    z-index: 2000;
+    color: #fff;
+    background: linear-gradient(#00ff95,#69ffaa,#fff);
+}
+.fa-close:hover{
+    color: white !important;
+}
+#purchase_services{
+    text-align: center;
+    display: none;
+    width: 25%;
+    border-radius: 20px;
+    top: 20%;
+    left: 40%;
+    padding: 30px;
+    position: absolute;
+    z-index: 2000;
+    color: #fff;
+    background: linear-gradient(#00ff95,#69ffaa,#fff);
+}
+
+{% if user.is_authenticated %}
+    .sn{
+
+    }
+{% endif %}
+
+.column {
+  width: 20%;
+  padding: 0 40px;
+}
+
+.seller_account{
+    display: block;
+}
+.services_show, .portfolio_btn, .analytics{
+    display: none;
+}
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    background-color: whitesmoke;
+    padding: 12px;
+    text-align: center;
+}
+.f{
+    width: 80%;
+}
+.btn-sec{
+    width: 20%;
+}
+@media screen and (max-width: 600px) {
+    .overlay{
+        top: 0 !important;
+        left: 0 !important;
+        width: 110% !important;
+    }
+    .f{
+        width: 100%;
+        margin-bottom: 10%;
+    }
+    .btn-sec{
+        width: 100%;
+    }
+    #purchase_services{
+        width: 100%;
+        border-radius: 6%;
+        top: 30%;
+        left: 0%;
+        right: 0%;
+        padding: 40px;
+        position: absolute;
+        z-index: 2000;
+        color: #fff;
+        background: linear-gradient(#00ff95,#69ffaa,#fff);
+    }
+
+}
+.overlay{
+    display: none;
+    margin-top: -10%;
+    margin-left: -10%;
+    position: absolute;
+    opacity: 0.7;
+    width: 110%;
+    height: 100%;
+    z-index: 1999;
+    color: #fff;
+    background: linear-gradient(#00ff95,#69ffaa,#fff);
+}
+.form-control-file::-webkit-file-upload-button{
+            visibility: hidden;
+}
+.form-control-file{
+    text-align: center;
+    display: inline-block;
+    border: 1px solid #000;
+    border-radius: 40px;
+    padding: 5px 5px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-weight: 700;
+    font-size: 1em;
+}
+.context_btn{
+    display: none;
+}
+.rw{
+    text-align: center;
+    margin: 3em;
+}
+.card{
+    margin: 0.4em;
+    background-color: white !important;
+}
+a{
+    text-decoration: none !important;
+    color: black !important;
+    font-weight: 700 !important;
+    font-size: 1em !important;
+}
+a:hover{
+    color: #00ff95 !important;
+}
+</style>
+    <div class="overlay"></div>
+    <div class="container">
+    <div class="row rw">
+    {% for s in srv %}
+                <div class="srv_card card" style="width: 15rem;">
+                    <a href="{% url 'services_pk' s_pk=s.id %}">
+                        {% if s.pic_second %}
+                            <img class="card-img-top" alt="img2" src="{{ s.pic_second.url }}">
+                        {% else %}
+                            <img class="card-img-top" src='{% static 'img/logo.png' %}'/>
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-title">{{ s.title }}</div>
+                            <div class="card-text">
+                                {% if s.pic_third and s.pic_first %}
+                                    <img class="imgs" alt="img1" src="{{ s.pic_first.url }}">
+                                    <img class="imgs" alt="img3" src="{{ s.pic_third.url }}">
+                                {% else %}
+                                    <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>&nbsp;
+                                    <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+    {% endfor %}
+        </div>
+    </div>
+{% for s in service_pk %}
+    <div class="container row">
+        <div class="f text-center">
+            <h1 style="display: none">{{ s.id }}</h1>
+            <h1>{{ s.title }}</h1>
+            <h1>{{ s.tags }}</h1>
+            <h1>{{ s.category }}</h1>
+            <h1>$&nbsp;{{ s.pricing }}</h1>
+            {% if s.pic_first and s.pic_second and s.pic_third %}
+                <img class="imgs" src="{{ s.pic_first.url }}" alt=""/><br>
+                <img class="imgs" src="{{ s.pic_second.url }}" alt=""/><br>
+                <img class="imgs" src="{{ s.pic_third.url }}" alt=""/><br>
+            {% else %}
+                <img class="imgs" src="" alt="Not Available"/><br>
+                <img class="imgs" src="" alt="No Image"/><br>
+                <img class="imgs" src="" alt="No Image"/><br>
+            {% endif %}
+        </div>
+        <div class="container btn-sec text-center">
+            <a href="{% url 'index' %}"><u>Go Back</u></a><br>
+            {% if user.is_authenticated%}
+                <button type="button" class="purchase_btn btn btn-outline-primary">Purchase</button><br>
+                <button type="button" class="btn btn-outline-primary">Contact</button><br>
+{#                <button type="button" class="btn btn-outline-primary"><a href="{% url 'seller' %}">Seller Account</a></button><br><br>#}
+            {% endif %}
+        </div>
+    </div>
+    <br><br>
+        <div id="purchase_services" class="container text-center">
+            <div class="close"><i class="fa fa-close"></i></div>
+            <div class="text-center">
+                <h1 class="text-center">Pay&nbsp;${{ s.pricing }}</h1>
+                <div class="card-body">
+                    <div class="card-title"><b>{{ s.title }}</b></div>
+                    <div id="paypal-button-container"></div>
+                </div>
+            </div>
+        </div>
+        <div id="purchase_services" class="require_submit container text-center">
+            <div class="text-center">
+                    <b><h2>Submit Your Requirements</h2><br></b>
+                    <form method="post" class="form" enctype="multipart/form-data" action="{% url 'purchase_services' srv_pk=s.id %}">
+                        {% csrf_token %}
+                        <div class="text-center">
+                            <textarea style="padding: 15px" type="text" name="text" class="form-contorl-lg form-control" placeholder="Your Requirements..."></textarea>
+                        </div><br>
+                        <div class="text-center">
+                            <input type="file" class="form-control-file" name="image">
+                        </div><br>
+                        <button type="submit" class="btn btn-outline-success">Continue</button>
+                    </form>
+            </div>
+        </div>
+    <script
+    src="https://www.paypal.com/sdk/js?client-id=ATV8ChoBtwpSV3OMHinaxwCN0GMk6PL_Ql5RBaPzRwmtxBRnqzPIwwNOa7YdWXOC3nKY524zGXbga_-K"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.
+  </script>
+    <script>
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+      // This function sets up the details of the transaction, including the amount and line item details.
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: '{{s.pricing}}.00'
+              }
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+      // This function captures the funds from the transaction.
+      return actions.order.capture().then(function(details) {
+        // This function shows a transaction success message to your buyer.
+        alert('Transaction completed !!!');
+          hide('.overlay');
+          inout('#purchase_services');
+          inout('.require_submit');
+          outin('.require_submit');
+          show('.overlay');
+      });
+    }
+    }).render('#paypal-button-container');
+  </script>
+    <script>
+        $('.purchase_btn').click(function () {
+            hide('.overlay');
+            inout('#purchase_services');
+            outin('#purchase_services');
+            show('.overlay');
+        });
+        $('.fa-close').click(function () {
+            inout('#purchase_services');
+            hide('.overlay');
+        });
+        $('.require_btn').click(function () {
+            hide('.overlay');
+            inout('#purchase_services');
+            inout('.require_submit');
+            outin('.require_submit');
+            show('.overlay');});
+        $('.sidenav').hide();
+    </script>
+        {% endfor %}
+{% endblock %}
+
+
+

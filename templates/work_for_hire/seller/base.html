@@ -1,0 +1,305 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Prince Gupta">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        WFH
+    </title>
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-ixon"/>
+    <link rel="stylesheet" href="{% static 'stylesheet/animate.css' %}" />
+    <script src="{% static 'js/font_awesome.js' %}"></script>
+    <link href="{% static 'stylesheet/bootstrap.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora|Roboto|Merriweather|Elsie|Dancing Script|Abril Fatface|Corben|&display=swap" rel="stylesheet">
+
+    <style>
+        .sn{
+            z-index: 3000 !important;
+        }
+        .seller_account{
+            display: none;
+        }
+        body{
+            font-family: Roboto;
+            padding: 30px 5px;
+        }
+        div.ic{
+            margin-bottom: 30px;
+        }
+        .fa, .fab, .fas{
+            color: #000 !important;
+            font-size: 2.5rem !important;
+        }
+        .fa:hover, .fab:hover, .fas:hover{
+            color: #00e3ff !important;
+        }
+        .icons{
+            color: #fff;
+            padding: 20px 10px;
+        }
+        a:hover{
+            text-decoration: none;
+        }
+        .clsbtn, .barbtn{
+        }
+        @media(max-width: 990px){
+            .clsbtn, .barbtn{
+                padding: 10px 10px !important;
+            }
+        }
+        .clsbtn:hover, .barbtn:hover{
+            color: black !important;
+        }
+        .sidenav{
+            display: none;
+            text-align: center;
+            width: 150px;
+        }
+        .sn{
+            position: absolute;
+            padding: 0px 10px;
+        }
+        .clsbtn{
+            display: none;
+        }
+        .register_section, .login_section{
+            background-color: white;
+            z-index: 1999;
+            display: none;
+            position: absolute;
+            padding: 70px 400px;
+        }
+        @media(max-width: 990px){
+            .register_section, .login_section{
+                padding: 70px !important;
+                z-index: 1999 !important;
+            }
+        }
+
+        {#Portfolio#}
+
+        .picture_uploader::-webkit-file-upload-button{
+            visibility: hidden;
+        }
+        .picture_uploader{
+            content: 'Select Your Profile Picture';
+            text-align: center;
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #000;
+            border-radius: 40px;
+            padding: 5px 5px;
+            outline: none;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            cursor: pointer;
+            text-shadow: 1px 1px #fff;
+            font-weight: 700;
+            font-size: 1em;
+        }
+        .picture_uploader:hover::before{
+            border-color: black;
+        }
+        .picture_uploader:active::before{
+            background: #000;
+        }
+        .form-control{
+            padding: 2px 20px;
+            text-align: left !important;
+            border-radius: 40px !important;
+            height: 50px;
+        }
+        #portfolio_form{
+            display: none;
+            text-align: center;
+            position: relative;
+            padding: 10px 310px;
+        }
+        @media(max-width: 990px){
+            #portfolio_form, .services_form{
+                padding: 10px 50px 0px 50px !important;
+                z-index: 1999 !important;
+            }
+            .picture_uploader{
+                text-align: center;
+                width: 100% !important;
+                padding: 5px 5px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="sn" style="width: 10rem">
+    <i class="barbtn fas fa-bars"></i>
+    <i class="clsbtn fas fa-times"></i><br>
+    <br><div class="sidenav">
+        <div>
+            <a href="{% url 'index' %}"><img style="width: 80%" class="logo img-fluid" src="{% static 'img/logo.png' %}" alt="logo"/></a>
+        </div>
+        <div class="icons">
+
+            {% if user.is_authenticated %}
+                    <div class="flex ic"><a href="{% url 'buyer_rst_create' %}"><i class="fa fa-paper-plane"></i></a></div>
+                    <div class="flex ic"><a href="{% url 'seller_services' %}"><i class="services_show fas fa-ad"></i></a></div>
+                    <div class="flex ic"><a href="{% url 'buyer_rst_show' %}"><i class="portfolio_btn fa fa-address-card"></i></a></div>
+                    <div class="flex ic"><a href="#"><i class="portfolio_btn fa fa-address-book-o"></i></a></div>
+                    <div class="flex ic seller_account"><a href="{% url 'seller' %}"><i class="fab fa-sellcast"></i></a></div>
+                    <div class="flex ic order_account"><a href="{% url 'order_show' %}"><i class="fas fa-shopping-cart"></i></a></div>
+                    <div class="flex ic analytics"><a href="#"><i class="fab fa-sellsy"></i></a></div>
+                    <div class="flex ic"><a href="#"><i class="fa fa-cogs"></i></a></div>
+                    <div class="flex ic"><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i></a></div>
+            {% else %}
+                <div class="flex ic"><a href="#"><i class="register fas fa-user-plus"></i></a></div>
+                <div class="flex ic"><a href="#"><i class="login fas fa-sign-in-alt"></i></a></div>
+            {% endif %}
+
+        </div>
+    </div>
+    </div><br><br><br>
+<div class="text-center">
+    {% if user.is_authenticated %}
+        <div class="create_s"><a  href="{% url 'create_s' pk_create=user.username %}" class="btn btn-outline-primary context_btn">Create new service</a></div>
+    {% endif %}
+</div>
+    {% if user.is_authenticated %}
+    <div class="container text-center" id="portfolio_form" >
+        <div class="section">
+            <h1>Create Your Portfolio Now...</h1><br>
+                <form method="POST" action="{% url 'portfolio' up_id=user.username %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group text-center">
+                    <input type="file" class="picture_uploader" name="picture">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="skills" required class="form-control" placeholder="Type Your Skills Use Comma">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="country" required class="form-control" placeholder="Country">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="degree" class="form-control" placeholder="Degree">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="certify" class="form-control" placeholder="Certification Courses Use Comma">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Submit</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    <div class="container text-center">
+        <div class="register_section text-center">
+            <h1>Register Here</h1><br>
+             <form class="register_form section" id="register_form"  action="{% url 'register' %}" enctype="multipart/form-data" method="POST">
+                 {% csrf_token %}
+                 <div class="form-group">
+                     <input id="username" required name="username" class="form-control text-center" placeholder="Username">
+                 </div>
+                 <div class="form-group" style="display: none">
+                     <input id="bot_detector" name="bot" class="form-control text-center">
+                 </div>
+                 <div class="form-group">
+                     <input type="email" id="email" required name="email" class="form-control text-center" aria-describedby="emailHelp" placeholder="Email">
+                 </div>
+                 <div class="form-group">
+                     <input type="password" name="password" required class="text-center form-control" id="password" placeholder="Password">
+                 </div><br>
+                 <button type="submit" class="reg_btn btn btn-primary mb-2">Submit</button>
+             </form>
+        </div>
+    </div>
+    <div class="container text-center">
+        <div class="login_section">
+            <h1>Login Here</h1><br>
+             <form method="post" action="{% url 'login' %}" enctype="multipart/form-data" id="login_form" class="section">
+                 {% csrf_token %}
+                 <div class="form-group">
+                     <input type="email" name="email" required class="form-control text-center" placeholder="Email">
+                 </div>
+                 <div class="form-group">
+                     <input type="password" name="password" required class="text-center form-control" placeholder="Password">
+                 </div><br>
+                 <button type="submit" class="btn btn-primary mb-2">Submit</button>
+             </form>
+        </div>
+    </div>
+
+
+</div>
+</body>
+<script src="{% static 'js/jquery.js' %}"></script>
+{% block navbar %}
+{% endblock %}
+<script>
+    {% if user.is_authenticated %}
+    $.ajax({
+            url:"{% url 'portfolio_show' u_id=user.username %}",
+            type: "GET",
+            enctype : "multipart/form-data",
+            success: function(data) {
+                console.log(data);
+                let port_details = JSON.parse(data);
+                let i = 0;
+                while(i < port_details.length){
+                    $('.portfolio_id').append('<img class="profile_imgs" src='+/media/+ port_details[i]["fields"]["picture"] + '/>'
+                        +'<h1>' + port_details[i]["fields"]["user_id"] + '</h1>'
+                        +'<h3>' + port_details[i]["fields"]["skills"] + '</h3>'
+                        +'<h3>' + port_details[i]["fields"]["country"] + '</h3>'
+                        +'<h3>' + port_details[i]["fields"]["degree"] + '</h3>'
+                        +'<h3>' + port_details[i]["fields"]["certification"]+ '</h3>');
+                    i = i+1;}
+            }
+            });
+    {% endif %}
+    function outin(e){
+        $(e).removeClass('animated fadeOutLeft');
+        $(e).show();
+        $(e).addClass('animated fadeInLeft');
+    }
+    function inout(e){
+        $(e).removeClass('animated fadeInLeft');
+        $(e).addClass('animated fadeOutLeft');
+    }
+    function hide(e){
+        $(e).hide()
+    }
+    function show(e){
+        $(e).show()
+    }
+    function nav(){
+        inout('.sidenav');
+        show('.barbtn');
+        hide('.clsbtn');
+    }
+    $('.barbtn').on('click', function () {
+            outin('.sidenav');
+            $('.barbtn').hide();
+            $('.clsbtn').show();
+    });
+    $('.clsbtn').on('click', function () {
+            inout('.sidenav');
+            $('.clsbtn').hide();
+            $('.barbtn').show();
+    });
+    $('.register').click(function () {
+        nav();
+        inout('.login_section');
+        outin('.register_section');
+    });
+    $('.login').click(function () {
+        nav();
+        inout('.register_section');
+        outin('.login_section');
+    });
+     $('.portfolio_btn').click(function () {
+         nav();
+         inout('.context_btn');
+         inout('.order-container');
+        inout('.services_card');
+        inout('.portfolio_id');
+        outin('#portfolio_form');
+    });
+</script>
+</html>

@@ -1,0 +1,40 @@
+{% extends 'work_for_hire/seller/base.html' %}
+{% block navbar %}
+    <div class="rst_container">
+        {% if p_details %}
+            {% if rst %}
+                {% for p in p_details %}
+                    {% for r in rst %}
+                        {% if p.category == r.category %}
+                            {% if r.user == user.username %}
+                                <div class="container text-center">
+                                    <h1>Currently, You don't have any request...</h1>
+                            {% else %}
+                                    <ol>
+                                        <li>
+                                            User:- <b>{{ r.user|upper }}</b>&nbsp;&nbsp;&nbsp;&nbsp;Request:- {{ r.rst }}
+                                        </li>
+                                    </ol>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    </div>
+    <script>
+    $('.context_btn').hide();
+        {#$.ajax({#}
+        {#   url:"{% url 'buyer_rst_show' %}",#}
+        {#   success: function (data) {#}
+        {#       let rst = JSON.parse(data);#}
+        {#       console.log(rst);#}
+        {#       let i = 0;#}
+        {#       while(i<rst.length){#}
+        {#           $('.rst_container').append('<i>' + rst[i]["fields"]["user"] + '<br>' + rst[i]["fields"]["rst"] + '</i><br>')#}
+        {#       }#}
+        {#   }});#}
+    </script>
+
+{% endblock %}
