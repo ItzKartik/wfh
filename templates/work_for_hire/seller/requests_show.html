@@ -1,4 +1,6 @@
 {% extends 'work_for_hire/seller/base.html' %}
+{% load tz %}
+{% get_current_timezone as TZ %}
 {% block navbar %}
     <div class="rst_container">
         {% if p_details %}
@@ -6,17 +8,20 @@
                 {% for p in p_details %}
                     {% for r in rst %}
                         {% if p.category == r.category %}
-                            {% if r.user == user.username %}
-                                <div class="container text-center">
-                                    <h1>Currently, You don't have any request...</h1>
+                            {% if user.username == r.user %}
+
                             {% else %}
+                                <div class="container text-center">
                                     <ol>
                                         <li>
-                                            User:- <b>{{ r.user|upper }}</b>&nbsp;&nbsp;&nbsp;&nbsp;Request:- {{ r.rst }}
+                                            {% localtime on %}
+                                            User:- <b>{{ r.user|upper }}</b>&nbsp;&nbsp;&nbsp;&nbsp;Request:- {{ r.rst }}{{ r.created_by|localtime }}
+                                            {% endlocaltime %}
                                         </li>
                                     </ol>
                                 </div>
                             {% endif %}
+                            </div>
                         {% endif %}
                     {% endfor %}
                 {% endfor %}

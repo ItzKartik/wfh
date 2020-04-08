@@ -1,5 +1,6 @@
 {% extends 'work_for_hire/seller/base.html' %}
 {% block navbar %}
+    {% load tz %}
     <style>
     body{
         font-weight: 600 !important;
@@ -34,7 +35,7 @@
         {% if o_details %}
             <div class="order-container container text-center">
                 <div class="title_show"><h1>{{ o_details.order_title }}</h1></div><br>
-                <div class="user_show">User : {{ o_details.seller }}</div><br>
+                <div class="user_show">Seller : {{ o_details.seller }}</div><br>
                 <div class="pricing_show">Price : ${{ o_details.order_pricing }}</div><br>
                 <div class="requirement_show">Requirement : {{ o_details.requirement }}</div><br>
                 <div class="order_img_show"><img alt="" style="width:20%;" src="{{ o_details.requirement_assets.url }}"/></div><br>
@@ -45,7 +46,20 @@
                 {% endif %}
                 <br>
                 <div class="container">
-                    <div class="receive-container text-left" style="width:100%"></div><br><br>
+                    <div class="receive-container text-left" style="width:100%">
+                        {% if chat %}
+                            {% for c in chat %}
+                                <div>
+                                    {{ c.text }}
+                                    {% if tm %}
+                                        <div class="text-right">{{ c.created_by|timezone:tm }}</div>
+                                    {% else %}
+                                        <div class="text-right">{{ c.created_by }}</div>
+                                    {% endif %}
+                                </div><hr>
+                            {% endfor %}
+                        {% endif %}
+                    </div><br><br>
                     <div class="text-center">
                         <input type="text" id="chat_field"/>
                         <button id="send_btn" class="btn btn-outline-primary">Send</button>
@@ -71,25 +85,23 @@
                     }
                 });
             });
-                $.ajax({
-                    url: '{% url 'chatting' order_id=o_details.id %}',
-                    success: function (data) {
-                        let chat = JSON.parse(data);
-                        console.log(chat);
-                        let i = 0;
-                        while(i < chat.length){
-                            $('.receive-container').append('<div>' + chat[i]["fields"]["text"] + '<div class="text-right" style="font-size:0.9em">' + chat[i]["fields"]["created_by"] + '</div></div><hr>');
-                            i = i+1;
-                        }
-                    }
-                });
+                {#$.ajax({#}
+                {#    url: '{% url 'chatting' order_id=o_details.id %}',#}
+                {#    success: function (data) {#}
+                {#        let chat = JSON.parse(data);#}
+                {#        console.log(chat);#}
+                {#        let i = 0;#}
+                {#        while(i < chat.length){#}
+                {#            $('.receive-container').append('<div>' + chat[i]["fields"]["text"] + '<div class="text-right" style="font-size:0.9em">' + chat[i]["fields"]["created_by"] + '</div></div><hr>');#}
+                {#            i = i+1;#}
+                {#        }#}
+                {#    }});#}
 
             </script>
             {% else %}
             <div class="jumbotron text-center"><h1>Currently, You Don't Have Any Orders !!!</h1></div>
         {% endif %}
     {% endif %}
-
 {% endblock %}
 
 

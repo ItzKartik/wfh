@@ -2,12 +2,86 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import port_folio, p_service, orders, order_chat, buyer_request
+from .models import port_folio, p_service, orders, order_chat, buyer_request, inbox, inbox_members
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.urls import reverse_lazy, reverse
 from django.utils.datastructures import MultiValueDictKeyError
+import pytz
 from django.utils import timezone
+from tzlocal import get_localzone
+
+
+def create_inbox_members(request, people_id):
+    u = request.user.username
+    if people_id != u:
+        i = inbox_members.objects.filter(people_id=people_id)
+        if i:
+            for us in i:
+                u = us.people_id
+                if u is None:
+                    i_m = inbox_members.objects.create(
+                        people_id=people_id,
+                        user_id=u
+                    )
+                    i_m.save()
+                    return HttpResponse(i_m.inbox_id)
+                else:
+                    return HttpResponse("Failed")
+        else:
+            i_m = inbox_members.objects.create(
+                people_id=people_id,
+                user_id=u
+            )
+            i_m.save()
+            return HttpResponse(i_m.inbox_id)
+    else:
+        return render(request, 'work_for_hire/index.html')
+
+
+def messages_view(request):
+    user = request.user.username
+    if request.method == 'POST':
+        i_id = request.POST['i_id']
+        text = request.POST['text']
+        attach = request.FILES['attach']
+        inbox.objects.create(
+            i_id=i_id,
+            user=user,
+            text=text,
+            attachments=attach
+        )
+        return render(request, 'work_for_hire/inbox.html')
+    else:
+        i = inbox_members.objects.all()
+        try:
+            for people in i:
+                p = people.people_id
+                u = people.user_id
+                if user == p:
+                    message = inbox_members.objects.filter(people_id=p)
+                    for m_id in message:
+                        u_id = m_id.user_id
+                        m_id = m_id.inbox_id
+                        message = inbox.objects.filter(i_id=m_id)
+                        obj = {
+                            'message': message,
+                            'u_id': u_id
+                        }
+                        return render(request, 'work_for_hire/inbox.html', obj)
+                elif user == u:
+                    message = inbox_members.objects.filter(user_id=u)
+                    for m_id in message:
+                        m_id = m_id.inbox_id
+                        message = inbox.objects.filter(i_id=m_id)
+                        i = inbox_members.objects.filter(user_id=u)
+                        obj = {
+                            'message': message,
+                            'u_id': i
+                        }
+                        return render(request, 'work_for_hire/inbox.html', obj)
+        except EOFError:
+            return render(request, 'work_for_hire/inbox.html')
 
 
 def buyer_rst_show(request):
@@ -27,7 +101,6 @@ def buyer_request_create(request):
         category = request.POST['category']
         rst = request.POST['rst']
         rstfile = request.FILES['rstfile']
-        print("done")
         b = buyer_request.objects.create(
             user=user,
             category=category,
@@ -39,8 +112,20 @@ def buyer_request_create(request):
         return redirect('buyer_rst_create')
     else:
         user = request.user.username
-        b = buyer_request.objects.filter(user=user)
-        return render(request, 'work_for_hire/seller/requests.html', {'rst': b})
+        try:
+            tm = get_localzone()
+            b = buyer_request.objects.filter(user=user)
+            obj = {
+                'b': b,
+                'tm': tm
+            }
+            return render(request, 'work_for_hire/seller/requests.html', obj)
+        except pytz.UnknownTimeZoneError:
+            b = buyer_request.objects.filter(user=user)
+            obj = {
+                'b': b
+            }
+            return render(request, 'work_for_hire/seller/requests.html', obj)
 
 
 def chatting(request, order_id):
@@ -50,13 +135,12 @@ def chatting(request, order_id):
         o = order_chat.objects.create(order_id=order_id,
                                       user=user,
                                       text=text,
-                                      created_by=timezone.now())
+                                      created_by=timezone.now()
+                                      )
         o.save()
         return HttpResponse(text)
     else:
-        o = order_chat.objects.filter(order_id=order_id)
-        chats = serializers.serialize('json', o)
-        return HttpResponse(chats)
+        return render(request, 'work_for_hire/seller/order.html')
 
 
 def order_show(request):
@@ -79,7 +163,7 @@ def order_show(request):
             }
             return render(request, 'work_for_hire/seller/order.html', obj)
         else:
-            return HttpResponse('Failed')
+            return render(request, 'work_for_hire/seller/order.html')
 
 
 def delete_services(request, su_pk):
@@ -120,13 +204,28 @@ def order_services(request, srv_pk):
                                       requirement=requirement_text,
                                       requirement_assets=requirement_image)
             o.save()
-            # return render(request, 'work_for_hire/seller/order.html', {'o_details': o})
             return redirect('order_show')
         else:
             return HttpResponse('You can not order yourself !!!')
     else:
-        o = orders.objects.get(id=srv_pk)
-        return render(request, 'work_for_hire/seller/order.html', {'o_details': o})
+        try:
+            tm = get_localzone()
+            o = orders.objects.get(id=srv_pk)
+            chat = order_chat.objects.filter(order_id=srv_pk)
+            obj = {
+                'o_details': o,
+                'tm': tm,
+                'chat': chat
+            }
+            return render(request, 'work_for_hire/seller/order.html', obj)
+        except pytz.UnknownTimeZoneError:
+            o = orders.objects.get(id=srv_pk)
+            chat = order_chat.objects.filter(order_id=srv_pk)
+            obj = {
+                'o_details': o,
+                'chat': chat
+            }
+            return render(request, 'work_for_hire/seller/order.html', obj)
 
 
 def fetch_all(request, mdl):

@@ -3,6 +3,21 @@ from django.contrib.auth.models import User
 import uuid
 
 
+class inbox_members(models.Model):
+    inbox_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    people_id = models.CharField(max_length=100)
+    user_id = models.CharField(max_length=100)
+
+
+class inbox(models.Model):
+    i_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.CharField(max_length=100)
+    text = models.CharField(max_length=1200)
+    attachments = models.FileField(null=True, blank=True)
+    seen = models.BooleanField(default=0)
+    created_by = models.DateTimeField(auto_now=True)
+
+
 class buyer_request(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.CharField(max_length=100)
@@ -16,7 +31,7 @@ class order_chat(models.Model):
     order_id = models.CharField(max_length=100)
     user = models.CharField(max_length=100)
     text = models.CharField(max_length=100)
-    created_by = models.TimeField(auto_now=True)
+    created_by = models.DateTimeField(auto_now=True)
 
 
 class orders(models.Model):

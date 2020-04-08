@@ -7,25 +7,22 @@
     <title>
         WFH
     </title>
+    <script type="text/javascript"> (function() { var css = document.createElement('link'); css.href = 'https://use.fontawesome.com/releases/v5.1.0/css/all.css'; css.rel = 'stylesheet'; css.type = 'text/css'; document.getElementsByTagName('head')[0].appendChild(css); })(); </script>
     <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-ixon"/>
     <link rel="stylesheet" href="{% static 'stylesheet/animate.css' %}" />
-    <script src="{% static 'js/font_awesome.js' %}"></script>
+{#    <link rel="stylesheet" href="{% static 'stylesheet/fontawesome.css' %}" />#}
+{#    <script src="{% static 'js/font_awesome.js' %}"></script>#}
     <link href="{% static 'stylesheet/bootstrap.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
     <link href="https://fonts.googleapis.com/css?family=Lora|Roboto|Merriweather|Elsie|Dancing Script|Abril Fatface|Corben|&display=swap" rel="stylesheet">
 
     <style>
         .sn{
             z-index: 3000 !important;
         }
-        .seller_account{
-            display: none;
-        }
         body{
             font-family: Roboto;
             padding: 30px 5px;
-        }
-        div.ic{
-            margin-bottom: 30px;
         }
         .fa, .fab, .fas{
             color: #000 !important;
@@ -52,6 +49,8 @@
             color: black !important;
         }
         .sidenav{
+            background: white;
+
             display: none;
             text-align: center;
             width: 150px;
@@ -127,29 +126,37 @@
                 padding: 5px 5px !important;
             }
         }
+        div.ic{
+            position: center;
+            padding: 10px;
+        }
+        .clsbtn{
+            display: none;
+        }
     </style>
+
 </head>
 <body>
 <div class="container-fluid">
-    <div class="sn" style="width: 10rem">
+    <div class="sn">
     <i class="barbtn fas fa-bars"></i>
     <i class="clsbtn fas fa-times"></i><br>
     <br><div class="sidenav">
         <div>
             <a href="{% url 'index' %}"><img style="width: 80%" class="logo img-fluid" src="{% static 'img/logo.png' %}" alt="logo"/></a>
         </div>
-        <div class="icons">
-
+        <div class="icons mx-auto">
             {% if user.is_authenticated %}
-                    <div class="flex ic"><a href="{% url 'buyer_rst_create' %}"><i class="fa fa-paper-plane"></i></a></div>
-                    <div class="flex ic"><a href="{% url 'seller_services' %}"><i class="services_show fas fa-ad"></i></a></div>
-                    <div class="flex ic"><a href="{% url 'buyer_rst_show' %}"><i class="portfolio_btn fa fa-address-card"></i></a></div>
-                    <div class="flex ic"><a href="#"><i class="portfolio_btn fa fa-address-book-o"></i></a></div>
-                    <div class="flex ic seller_account"><a href="{% url 'seller' %}"><i class="fab fa-sellcast"></i></a></div>
-                    <div class="flex ic order_account"><a href="{% url 'order_show' %}"><i class="fas fa-shopping-cart"></i></a></div>
-                    <div class="flex ic analytics"><a href="#"><i class="fab fa-sellsy"></i></a></div>
-                    <div class="flex ic"><a href="#"><i class="fa fa-cogs"></i></a></div>
-                    <div class="flex ic"><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i></a></div>
+                    <div class="ic"><a href="{% url 'buyer_rst_create' %}"><i class="fa fa-paper-plane"></i></a></div>
+                    <div class="ic"><a href="{% url 'inbox_view' %}"><i class="fas fa-inbox"></i></a></div>
+                    <div class="ic"><a href="{% url 'seller_services' %}"><i class="services_show fab fa-adversal"></i></a></div>
+                    <div class="ic"><a href="{% url 'buyer_rst_show' %}"><i class="fa fa-address-card"></i></a></div>
+                    <div class="ic"><a href="#"><i class="portfolio_btn fa fa-address-book"></i></a></div>
+                    <div class="ic seller_account"><a href="{% url 'seller' %}"><i class="fab fa-sellcast"></i></a></div>
+                    <div class="ic order_account"><a href="{% url 'order_show' %}"><i class="fas fa-shopping-cart"></i></a></div>
+                    <div class="ic analytics"><a href="#"><i class="fab fa-sellsy"></i></a></div>
+                    <div class="ic"><a href="#"><i class="fa fa-cogs"></i></a></div>
+                    <div class="ic"><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i></a></div>
             {% else %}
                 <div class="flex ic"><a href="#"><i class="register fas fa-user-plus"></i></a></div>
                 <div class="flex ic"><a href="#"><i class="login fas fa-sign-in-alt"></i></a></div>
@@ -286,11 +293,13 @@
     $('.register').click(function () {
         nav();
         inout('.login_section');
+        $('.srv_card').remove();
         outin('.register_section');
     });
     $('.login').click(function () {
         nav();
         inout('.register_section');
+        $('.srv_card').remove();
         outin('.login_section');
     });
      $('.portfolio_btn').click(function () {

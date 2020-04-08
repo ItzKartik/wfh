@@ -1,5 +1,6 @@
 {% extends 'work_for_hire/seller/base.html' %}
 {% block navbar %}
+    {% load tz %}
     <style>
 a:hover{
     color: white;
@@ -112,9 +113,14 @@ a:hover{
         <div class="text-center"><button id="post_form_open" class="btn btn-outline-primary">Post A Request</button></div><br><br>
         <div class="container text-center">
     <h1>Your Posted Request</h1><br><br>
-    {% if rst %}
-        {% for r in rst %}
-            <a>{{ r.rst }}</a><div style="font-size: 0.8em">{{ r.created_by }}</div><br><br>
+    {% if b %}
+        {% for r in b %}
+            <a>{{ r.rst }}</a>&nbsp;<br>
+            {% if tm %}
+                <div class="text-center">{{ r.created_by|timezone:tm }}</div>
+            {% else %}
+                <div class="text-center">{{ r.created_by }}</div>
+            {% endif %}<br><br>
         {% endfor %}
     {% endif %}
     </div><br>

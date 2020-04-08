@@ -32,8 +32,9 @@ urlpatterns = [
     path('order_show/', views.order_show, name='order_show'),
     path('buyer_rst/', views.buyer_request_create, name='buyer_rst_create'),
     path('requests/', views.buyer_rst_show, name='buyer_rst_show'),
+    path('inbox_view/', views.messages_view, name='inbox_view'),
 
-    
+    re_path(r'^inbox/(?P<people_id>[\w-]+)/$', views.create_inbox_members, name='contact'),
     re_path(r'^chatting/(?P<order_id>[\w-]+)/$', views.chatting, name='chatting'),
     re_path(r'^delete_services/(?P<su_pk>[\w-]+)/$', views.delete_services, name='delete_services'),
     re_path(r'^update_services/(?P<su_pk>[\w-]+)/$', views.update_services, name='update_services'),

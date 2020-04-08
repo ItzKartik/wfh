@@ -1,6 +1,10 @@
 {% extends 'work_for_hire/seller/base.html' %}
-{% block navbar %}{% load static %}
+{% block navbar %}
+    {% load static %}
 <style>
+.context_btn{
+    display: none !important;;
+}
 .imgs{
     width: 40%;
     margin-top: 10% !important;
@@ -43,11 +47,6 @@ a:hover{
     background: linear-gradient(#00ff95,#69ffaa,#fff);
 }
 
-{% if user.is_authenticated %}
-    .sn{
-
-    }
-{% endif %}
 
 .column {
   width: 20%;
@@ -57,9 +56,7 @@ a:hover{
 .seller_account{
     display: block;
 }
-.services_show, .portfolio_btn, .analytics{
-    display: none;
-}
+
 .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     background-color: whitesmoke;
@@ -128,9 +125,6 @@ a:hover{
     font-weight: 700;
     font-size: 1em;
 }
-.context_btn{
-    display: none;
-}
 .rw{
     text-align: center;
     margin: 3em;
@@ -148,10 +142,33 @@ a{
 a:hover{
     color: #00ff95 !important;
 }
+.inbox{
+    background-color: white;
+    border-radius: 20px;
+    z-index: 2000;
+    position: absolute;
+}
 </style>
     <div class="overlay"></div>
+    <div class="container text-center inbox" style="width: 15rem; display: none">
+        <i class="fas fa-times cls_inbox"></i>
+        <div class="form inbox-message">
+            <a><div class="user_id"></div></a>
+            <div class="inbox_id" style="display: none"></div>
+            <div class="view_msg" style="display: none">View Message</div>
+        </div>
+        <div class="message-container"></div>
+            <div class="form-group">
+                <label>
+                    <input type="text" class="form-control"/>
+                </label>
+                <input type="file" class="form-control form-control-file"/><br>
+                <button class="btn btn-outline-success send-btn">Send</button>
+            </div>
+    </div>
     <div class="container">
     <div class="row rw">
+
     {% for s in srv %}
                 <div class="srv_card card" style="width: 15rem;">
                     <a href="{% url 'services_pk' s_pk=s.id %}">
@@ -178,7 +195,7 @@ a:hover{
         </div>
     </div>
 {% for s in service_pk %}
-    <div class="container row">
+    <div class="container row order_container">
         <div class="f text-center">
             <h1 style="display: none">{{ s.id }}</h1>
             <h1>{{ s.title }}</h1>
@@ -197,16 +214,35 @@ a:hover{
         </div>
         <div class="container btn-sec text-center">
             <a href="{% url 'index' %}"><u>Go Back</u></a><br>
-            {% if user.is_authenticated%}
+            {% if user.is_authenticated %}
                 <button type="button" class="purchase_btn btn btn-outline-primary">Purchase</button><br>
-                <button type="button" class="btn btn-outline-primary">Contact</button><br>
-{#                <button type="button" class="btn btn-outline-primary"><a href="{% url 'seller' %}">Seller Account</a></button><br><br>#}
+                <button type="button" class="btn btn-outline-primary contact-btn"><a>Contact</a></button><br>
+                    <script>
+                        $('.contact-btn').on('click', function () {
+                            $.ajax({
+                                url: "{% url 'contact' people_id=s.seller_id %}",
+                                success: function (data) {
+                                    $('.overlay').show();
+                                    $('.order_container').hide();
+                                    $('.inbox').show();
+                                    $('.cls_inbox').click(function () {
+                                        $('.inbox').hide();
+                                        $('.overlay').hide();
+                                        $('.order_container').show();
+                                    });
+                                    $('.inbox_id').append('<div>' + data + '</div>');
+                                    $('.user_id').append('{{ s.seller_id }}');
+
+                                }
+                            });
+                        });
+                    </script>
             {% endif %}
         </div>
     </div>
     <br><br>
         <div id="purchase_services" class="container text-center">
-            <div class="close"><i class="fa fa-close"></i></div>
+            <div class="close"><i class="fas fa-times"></i></div>
             <div class="text-center">
                 <h1 class="text-center">Pay&nbsp;${{ s.pricing }}</h1>
                 <div class="card-body">
@@ -221,10 +257,10 @@ a:hover{
                     <form method="post" class="form" enctype="multipart/form-data" action="{% url 'purchase_services' srv_pk=s.id %}">
                         {% csrf_token %}
                         <div class="text-center">
-                            <textarea style="padding: 15px" type="text" name="text" class="form-contorl-lg form-control" placeholder="Your Requirements..."></textarea>
+                            <textarea style="padding: 15px" required type="text" name="text" class="form-contorl-lg form-control" placeholder="Your Requirements..."></textarea>
                         </div><br>
                         <div class="text-center">
-                            <input type="file" class="form-control-file" name="image">
+                            <input type="file" required class="form-control-file" name="image">
                         </div><br>
                         <button type="submit" class="btn btn-outline-success">Continue</button>
                     </form>
@@ -260,6 +296,7 @@ a:hover{
     }).render('#paypal-button-container');
   </script>
     <script>
+    $('.context_btn').hide();
         $('.purchase_btn').click(function () {
             hide('.overlay');
             inout('#purchase_services');
@@ -279,6 +316,8 @@ a:hover{
         $('.sidenav').hide();
     </script>
         {% endfor %}
+
+
 {% endblock %}
 
 
