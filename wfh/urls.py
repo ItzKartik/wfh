@@ -32,7 +32,8 @@ urlpatterns = [
     path('order_show/', views.order_show, name='order_show'),
     path('buyer_rst/', views.buyer_request_create, name='buyer_rst_create'),
     path('requests/', views.buyer_rst_show, name='buyer_rst_show'),
-    path('inbox_view/', views.messages_view, name='inbox_view'),
+    path('inbox_view/', views.inbox_view, name='inbox_view'),
+    path('msg/', views.message_view, name='message_view'),
 
     re_path(r'^inbox/(?P<people_id>[\w-]+)/$', views.create_inbox_members, name='contact'),
     re_path(r'^chatting/(?P<order_id>[\w-]+)/$', views.chatting, name='chatting'),
@@ -45,6 +46,8 @@ urlpatterns = [
     re_path(r'^profile/(?P<u_id>[\w-]+)/$', views.portfolio_show, name="portfolio_show"),
     re_path(r'^create/(?P<pk_create>[\w-]+)/$', views.create_s, name='create_s'),
     re_path(r'^portfolio/(?P<up_id>[\w-]+)/$', views.portfolio, name='portfolio'),
+    # re_path(r'^messages/(?P<inbox_id>[\w-]+)$', views.message_view, name='message_view'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

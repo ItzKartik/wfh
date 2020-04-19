@@ -2,9 +2,6 @@
 {% block navbar %}
     {% load static %}
 <style>
-body{
-    padding: 40px 20px;
-}
 .imgs{
     width: 40%;
     height: 5em;
@@ -12,15 +9,11 @@ body{
     border-radius: 10px;
 }
 .profile_imgs{
-    border-radius: 50%;
-    width: 30%;
+    border-radius: 50px;
+    width: 200px;
 }
 .card{
     margin: 20px !important;
-}
-.portfolio_id{
-    text-align: center;
-    margin: 5rem;
 }
 
 .card-img-top{
@@ -32,83 +25,66 @@ body{
 .card-title{
 
 }
-</style>
-    <div class="container services_card">
-        <div class="row">
-        {% for srv in s %}
-            <div class="card" style="width: 20rem;">
-                    {% if srv.pic_first %}
-                        <img class="card-img-top" src='{{ srv.pic_first.url }}'/>
-                    {% else %}
-                        <img class="card-img-top" src='{% static 'img/logo.png' %}'/>
-                    {% endif %}
-                    <div class="card-body text-center">
-                        <div class="card-title text-center">
-                            <b><a>{{ srv.title }}</a></b>
-                        </div><br>
+</style><br>
+        <div class="text-center">
+    {% if user.is_authenticated %}
+        <div class="create_s"><a  href="{% url 'create_s' pk_create=user.username %}" style="font-size: 1.2em; color: white" class="btn btn-outline-light context_btn"><b>New Service</b></a></div>
+    {% endif %}
+    </div><br><br>
+    <div class="container text-center justify-content-center mx-auto">
+        <div class="portfolio_id"></div><hr>
+        <div class="services_card">
+            <div class="row">
+                {% for srv in s %}
+                <div class="card" style="width: 18rem;">
                         {% if srv.pic_first %}
-                            <img class="imgs text-center" src='{{ srv.pic_third.url }}'/>&nbsp;
-                            <img class="imgs text-center" src='{{ srv.pic_second.url }}'/>
+                            <img class="card-img-top" src='{{ srv.pic_first.url }}'/>
                         {% else %}
-                            <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>&nbsp;
-                            <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>
+                            <img class="card-img-top" src='{% static 'img/logo.png' %}'/>
                         {% endif %}
-                    </div>
-                    <div class="card-footer text-center">
-                        <b>$&nbsp;{{ srv.pricing }}</b><br><hr>
-                        <a class="edit_service fa fa-edit" href="{% url 'update_services' su_pk=srv.id %}"></a>&nbsp;
-                        <a class="edit_service fa fa-trash-alt" href="{% url 'delete_services' su_pk=srv.id %}"></a>
-                    </div>
+                        <div class="card-body text-center">
+                            <div class="card-title text-center">
+                                <b><a>{{ srv.title }}</a></b>
+                            </div><br>
+                            {% if srv.pic_first %}
+                                <img class="imgs text-center" src='{{ srv.pic_third.url }}'/>&nbsp;
+                                <img class="imgs text-center" src='{{ srv.pic_second.url }}'/>
+                            {% else %}
+                                <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>&nbsp;
+                                <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer text-center">
+                            <b>$&nbsp;{{ srv.pricing }}</b><br><hr>
+                            <a class="edit_service fa fa-edit" href="{% url 'update_services' su_pk=srv.id %}"></a>&nbsp;
+                            <a class="edit_service fa fa-trash-alt" href="{% url 'delete_services' su_pk=srv.id %}"></a>
+                        </div>
+                </div>
+            {% endfor %}
             </div>
-        {% endfor %}
         </div>
     </div>
-        {#$('.services_show').click(function (e) {#}
-        {#    e.preventDefault();#}
-        {#    $('.services_card').empty();#}
-        {#    nav();#}
-        {#    inout('#portfolio_form');#}
-        {#    inout('.portfolio_id');#}
-        {#    outin('.context_btn');#}
-        {#    outin('.services_card');#}
-        {#$.ajax({#}
-        {#    url:"{% url 'services_show' u_id=user.username %}",#}
-        {#    type: "GET",#}
-        {#    enctype : "multipart/form-data",#}
-        {#    success: function(data) {#}
-        {#        console.log(data);#}
-        {#        let service_details = JSON.parse(data);#}
-        {#        let i = 0;#}
-        {#        while(i < service_details.length){#}
-        {#            $('.services_card').append('<div class="card" style="width: 18rem;">'#}
-        {#                +'<img class="card-img-top" src='+/media/+ service_details[i]["fields"]["pic_first"] + '/>'#}
-        {#                + '<div class="card-body">'+'<div class="card-title text-center"><b>' + service_details[i]["fields"]["title"] + '</b></div><br>'#}
-        {##}
-        {#                +'<img class="imgs text-center" src='+/media/+ service_details[i]["fields"]["pic_second"] + '/>&nbsp;'#}
-        {#                +'<img class="imgs text-center" src='+/media/+ service_details[i]["fields"]["pic_third"] + '/></div>'#}
-        {##}
-        {#                + '<a class="srv_pk">' + service_details[i]["pk"] + '</a>'#}
-        {#                +'<div class="card-footer text-center"><b>$&nbsp;' + service_details[i]["fields"]["pricing"] + '</b></div>'#}
-        {#                +'<a class="edit_service fa fa-edit"></a>');#}
-        {#            i = i+1;}#}
-        {##}
-        {#    }#}
-        {#    });});#}
-        {#$.ajax({#}
-        {#    url:"{% url 'portfolio_show' u_id=user.username %}",#}
-        {#    type: "GET",#}
-        {#    enctype : "multipart/form-data",#}
-        {#    success: function(data) {#}
-        {#        console.log(data);#}
-        {#        let port_details = JSON.parse(data);#}
-        {#        let i = 0;#}
-        {#        while(i < port_details.length){#}
-        {#            $('.portfolio_id').append('<img class="profile_imgs" src='+/media/+ port_details[i]["fields"]["picture"] + '/>'#}
-        {#                +'<h1>' + port_details[i]["fields"]["user_id"] + '</h1>'#}
-        {#                +'<h3>' + port_details[i]["fields"]["skills"] + '</h3>'#}
-        {#                +'<h3>' + port_details[i]["fields"]["country"] + '</h3>'#}
-        {#                +'<h3>' + port_details[i]["fields"]["degree"] + '</h3>'#}
-        {#                +'<h3>' + port_details[i]["fields"]["certification"]+ '</h3>');#}
-        {#            i = i+1;}#}
-        {#    });#}
+    <script>
+        {% if user.is_authenticated %}
+         $.ajax({
+            url:"{% url 'portfolio_show' u_id=user.username %}",
+            type: "GET",
+            enctype : "multipart/form-data",
+            success: function(data) {
+                console.log(data);
+                let port_details = JSON.parse(data);
+                let i = 0;
+                while(i < port_details.length){
+                    $('.portfolio_id').append('<div class="col mx-auto" style="object-fit: scale-down; width: 200px; height: 160px;"><img width="100%" height="100%" class="img-responsive rounded-circle z-depth-2" src='+/media/+ port_details[i]["fields"]["picture"] + '/></div>'
+                        +'<h1 style="font-size:3em; font-family: Corben;">' + port_details[i]["fields"]["user_id"] + '</h1>'
+                        +'<h3 style="font-size:2em; font-family: Corben;">' + port_details[i]["fields"]["skills"] + '</h3>'
+                        +'<h3 style="font-size:2em; font-family: Corben;">' + port_details[i]["fields"]["country"] + '</h3>'
+                        +'<h3 style="font-size:2em; font-family: Corben;">' + port_details[i]["fields"]["degree"] + '</h3>'
+                        +'<h3 style="font-size:2em; font-family: Corben;">' + port_details[i]["fields"]["certification"]+ '</h3><br><br>');
+                    i = i+1;}
+            }
+            });
+    {% endif %}
+    </script>
+
 {% endblock %}

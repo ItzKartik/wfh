@@ -2,7 +2,7 @@
 {% load tz %}
 {% get_current_timezone as TZ %}
 {% block navbar %}
-    <div class="rst_container">
+    <div class="rst_container container" style="background: white; padding: 40px; border-radius: 10px">
         {% if p_details %}
             {% if rst %}
                 {% for p in p_details %}
@@ -12,34 +12,40 @@
 
                             {% else %}
                                 <div class="container text-center">
-                                    <ol>
-                                        <li>
-                                            {% localtime on %}
-                                            User:- <b>{{ r.user|upper }}</b>&nbsp;&nbsp;&nbsp;&nbsp;Request:- {{ r.rst }}{{ r.created_by|localtime }}
-                                            {% endlocaltime %}
-                                        </li>
-                                    </ol>
+                                        <div class="row" style="padding: 20px 0px">
+                                            <span class="text-left"><i><u>{{ r.user|upper }}</u></i></span>
+                                            <div class="text-left col">Request:- {{ r.rst }}</div>
+                                            <div class="col text-right">
+                                                {% if tm %}
+                                                    <p>{{ r.created_by|timezone:tm }}</p>
+                                                {% else %}
+                                                    <p>{{ r.created_by }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-outline-primary">Accept</button><hr>
                                 </div>
                             {% endif %}
-                            </div>
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
+            {% else %}
+                <h1 class="text-center justify-content-center mx-auto">No Request Pending...</h1>
             {% endif %}
         {% endif %}
     </div>
     <script>
     $('.context_btn').hide();
-        {#$.ajax({#}
-        {#   url:"{% url 'buyer_rst_show' %}",#}
-        {#   success: function (data) {#}
-        {#       let rst = JSON.parse(data);#}
-        {#       console.log(rst);#}
-        {#       let i = 0;#}
-        {#       while(i<rst.length){#}
-        {#           $('.rst_container').append('<i>' + rst[i]["fields"]["user"] + '<br>' + rst[i]["fields"]["rst"] + '</i><br>')#}
-        {#       }#}
-        {#   }});#}
+        $.ajax({
+           url:"{% url 'buyer_rst_show' %}",
+           success: function (data) {
+               let rst = JSON.parse(data);
+               console.log(rst);
+               let i = 0;
+               while(i<rst.length){
+                   $('.rst_container').append('<i>' + rst[i]["fields"]["user"] + '<br>' + rst[i]["fields"]["rst"] + '</i><br>')
+               }
+           }});
     </script>
 
 {% endblock %}

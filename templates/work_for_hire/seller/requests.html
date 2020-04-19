@@ -2,27 +2,6 @@
 {% block navbar %}
     {% load tz %}
     <style>
-a:hover{
-    color: white;
-    text-decoration: none !important;
-}
-
-.require_submit{
-    text-align: center;
-    width: 30%;
-    border-radius: 20px;
-    top: 35%;
-    left: 35%;
-    right: 35%;
-    padding: 40px;
-    position: absolute;
-    z-index: 2000;
-    color: #fff;
-    background: linear-gradient(#00ff95,#69ffaa,#fff);
-}
-.fa-close:hover{
-    color: white !important;
-}
 #purchase_services{
     text-align: center;
     display: none;
@@ -37,11 +16,6 @@ a:hover{
     background: linear-gradient(#00ff95,#69ffaa,#fff);
 }
 @media screen and (max-width: 900px) {
-    .overlay{
-        top: -10% !important;
-        left: 10% !important;
-        width: 110% !important;
-    }
     #purchase_services{
         width: 100%;
         border-radius: 6%;
@@ -56,33 +30,10 @@ a:hover{
     }
 
 }
-.overlay{
-    display: none;
-    margin-top: -15%;
-    margin-left: -10%;
-    position: absolute;
-    opacity: 0.7;
-    width: 110%;
-    height: 100%;
-    z-index: 1999;
-    color: #fff;
-    background: linear-gradient(#00ff95,#69ffaa,#fff);
-}
-a{
-    text-decoration: none !important;
-    color: black !important;
-    font-weight: 700 !important;
-    font-size: 1em !important;
-}
-a:hover{
-    cursor: pointer;
-    color: #00ff95 !important;
-}
     </style>
-    <div class="overlay"></div>
 
-     <div id="purchase_services" class="require_submit container text-center mx-auto" style="width: 20rem">
-     <div class="close"><i class="fa fa-close"></i></div><br>
+     <div id="purchase_services" class="container require_submit text-center mx-auto" style="width: 20rem; color: black">
+         <div class="text-right mr-auto"><i onclick="sec_hide('.require_submit');" class="fas fa-times cls_inbox"></i></div>
             <div class="text-center">
                 <form method="post" enctype="multipart/form-data" action="{% url 'buyer_rst_create' %}">{% csrf_token %}
                     <div class="form-group">
@@ -106,34 +57,30 @@ a:hover{
                             <input name="rstfile" id="file_field" type="file" class="form-control picture_uploader"/>
                         </label>
                     </div>
-                    <button type="submit" id="post_rst" class="btn btn-outline-success">Submit</button>
+                    <button type="submit" id="post_rst" class="btn btn-outline-primary">Submit</button>
                 </form>
             </div>
      </div>
-        <div class="text-center"><button id="post_form_open" class="btn btn-outline-primary">Post A Request</button></div><br><br>
-        <div class="container text-center">
-    <h1>Your Posted Request</h1><br><br>
-    {% if b %}
-        {% for r in b %}
-            <a>{{ r.rst }}</a>&nbsp;<br>
-            {% if tm %}
-                <div class="text-center">{{ r.created_by|timezone:tm }}</div>
-            {% else %}
-                <div class="text-center">{{ r.created_by }}</div>
-            {% endif %}<br><br>
-        {% endfor %}
-    {% endif %}
-    </div><br>
+        <div class="container text-center" style="background: white; padding: 40px; border-radius: 10px">
+            <div class="text-center"><button id="post_form_open" class="btn btn-outline-primary">Post A Request</button></div><br><br>
+            <h1>Your Posted Request</h1><br><br>
+            {% if b %}
+                {% for r in b %}
+                    <a>{{ r.rst }}</a>&nbsp;<br>
+                    {% if tm %}
+                        <div class="text-center">{{ r.created_by|timezone:tm }}</div>
+                    {% else %}
+                        <div class="text-center">{{ r.created_by }}</div>
+                    {% endif %}<br><br>
+                {% endfor %}
+            {% endif %}
+        </div><br>
     <script>
     $('#post_form_open').click(function () {
             hide('.overlay');
             inout('#purchase_services');
             outin('#purchase_services');
             show('.overlay');
-    });
-    $('.fa-close').click(function () {
-            inout('#purchase_services');
-            hide('.overlay');
     });
     $('.context_btn').hide();
     </script>

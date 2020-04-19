@@ -9,13 +9,13 @@ class inbox_members(models.Model):
     user_id = models.CharField(max_length=100)
 
 
-class inbox(models.Model):
-    i_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+class direct_message(models.Model):
+    inbox_id = models.CharField(max_length=300)
     user = models.CharField(max_length=100)
     text = models.CharField(max_length=1200)
     attachments = models.FileField(null=True, blank=True)
     seen = models.BooleanField(default=0)
-    created_by = models.DateTimeField(auto_now=True)
+    datetime = models.DateTimeField(auto_now=True)
 
 
 class buyer_request(models.Model):

@@ -1,8 +1,9 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import port_folio, p_service, orders, order_chat, buyer_request, inbox, inbox_members
+from .models import port_folio, p_service, orders, order_chat, buyer_request, direct_message, inbox_members
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.urls import reverse_lazy, reverse
@@ -10,77 +11,76 @@ from django.utils.datastructures import MultiValueDictKeyError
 import pytz
 from django.utils import timezone
 from tzlocal import get_localzone
+import smtplib
+import socket
 
 
 def create_inbox_members(request, people_id):
     u = request.user.username
-    if people_id != u:
-        i = inbox_members.objects.filter(people_id=people_id)
+    try:
+        i = inbox_members.objects.get(people_id=people_id, user_id=u)
         if i:
-            for us in i:
-                u = us.people_id
-                if u is None:
-                    i_m = inbox_members.objects.create(
-                        people_id=people_id,
-                        user_id=u
-                    )
-                    i_m.save()
-                    return HttpResponse(i_m.inbox_id)
-                else:
-                    return HttpResponse("Failed")
-        else:
-            i_m = inbox_members.objects.create(
-                people_id=people_id,
-                user_id=u
-            )
-            i_m.save()
-            return HttpResponse(i_m.inbox_id)
-    else:
-        return render(request, 'work_for_hire/index.html')
+            return HttpResponse("Change")
+    except inbox_members.DoesNotExist:
+        i_m = inbox_members.objects.create(
+            people_id=people_id,
+            user_id=u
+        )
+        i_m.save()
+        subject = "Prince"
+        text = "Hello User"
+        smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        smtp_server.login("guptapz111@gmail.com", "localhost@111")
+        message = "Subject: {}\n\n{}".format(subject, text)
+        smtp_server.sendmail("noreply@gmail.com", "gtinku935@gmail.com", message)
+        smtp_server.close()
+        return HttpResponse(i_m.inbox_id)
 
 
-def messages_view(request):
+def message_view(request):
+    if request.method == "POST":
+        inb = request.POST['inb']
+        model = direct_message.objects.filter(inbox_id=inb)
+        msg = serializers.serialize('json', model)
+        return HttpResponse(msg)
+
+
+def inbox_view(request):
     user = request.user.username
     if request.method == 'POST':
-        i_id = request.POST['i_id']
-        text = request.POST['text']
-        attach = request.FILES['attach']
-        inbox.objects.create(
-            i_id=i_id,
-            user=user,
-            text=text,
-            attachments=attach
+        inbox_id = request.POST['i_id']
+        text = request.POST['itext']
+        file = request.FILES.get('ifiles', False)
+        d = direct_message.objects.create(
+                inbox_id=inbox_id,
+                user=user,
+                text=text,
+                attachments=file,
+                datetime=timezone.now()
         )
-        return render(request, 'work_for_hire/inbox.html')
+        d.save()
+        # return redirect('inbox_view')
+        return HttpResponse("Message Sent !!!   ")
     else:
-        i = inbox_members.objects.all()
-        try:
-            for people in i:
-                p = people.people_id
-                u = people.user_id
-                if user == p:
-                    message = inbox_members.objects.filter(people_id=p)
-                    for m_id in message:
-                        u_id = m_id.user_id
-                        m_id = m_id.inbox_id
-                        message = inbox.objects.filter(i_id=m_id)
-                        obj = {
-                            'message': message,
-                            'u_id': u_id
-                        }
-                        return render(request, 'work_for_hire/inbox.html', obj)
-                elif user == u:
-                    message = inbox_members.objects.filter(user_id=u)
-                    for m_id in message:
-                        m_id = m_id.inbox_id
-                        message = inbox.objects.filter(i_id=m_id)
-                        i = inbox_members.objects.filter(user_id=u)
-                        obj = {
-                            'message': message,
-                            'u_id': i
-                        }
-                        return render(request, 'work_for_hire/inbox.html', obj)
-        except EOFError:
+        p = inbox_members.objects.filter(people_id=user)
+        u = inbox_members.objects.filter(user_id=user)
+        if p:
+            for inb in p:
+                msg = direct_message.objects.filter(inbox_id=inb.inbox_id)
+                obj = {
+                    'people_id': p,
+                    # 'msg': msg
+                }
+                return render(request, 'work_for_hire/inbox.html', obj)
+        elif u:
+            for inb in u:
+                msg = direct_message.objects.filter(inbox_id=inb.inbox_id)
+                obj = {
+                    'user_id': u,
+                    'msg': msg
+                }
+                return render(request, 'work_for_hire/inbox.html', obj)
+        else:
             return render(request, 'work_for_hire/inbox.html')
 
 
@@ -88,7 +88,10 @@ def buyer_rst_show(request):
     user = request.user.username
     p_model = p_service.objects.filter(seller_id=user)
     b_model = buyer_request.objects.all()
+
+    tm = get_localzone()
     all_obj = {
+        'tm': tm,
         'p_details': p_model,
         'rst': b_model
     }
@@ -148,18 +151,12 @@ def order_show(request):
     o = orders.objects.all()
     for o in o:
         print(o.seller)
-        slr = o.seller
-        buyer = o.buyer
-        if slr == user:
-            odr = orders.objects.filter(seller=slr)
+        slr_orders = orders.objects.filter(seller=user)
+        bur_orders = orders.objects.filter(buyer=user)
+        if slr_orders or bur_orders:
             obj = {
-                'o': odr
-            }
-            return render(request, 'work_for_hire/seller/order.html', obj)
-        elif buyer == user:
-            odr = orders.objects.filter(buyer=buyer)
-            obj = {
-                'o': odr
+                'o': slr_orders,
+                'b': bur_orders
             }
             return render(request, 'work_for_hire/seller/order.html', obj)
         else:
@@ -264,6 +261,7 @@ def services_show(request, u_id):
 
 
 def index(request):
+    # return render(request, 'work_for_hire/seller/base.html')
     return fetch_all(request, p_service)
 
 
@@ -322,7 +320,7 @@ def portfolio(request, up_id):
             p.degree = degree
             p.certification = certify
             p.save()
-            return redirect('seller')
+            return redirect('seller_services')
         else:
             picture = request.FILES['picture']
             skills = request.POST['skills']
@@ -343,6 +341,7 @@ def create_s(request, pk_create):
         p_two = request.FILES['p_two']
         p_three = request.FILES['p_three']
         title = request.POST['title']
+        t = "I will do " + title
         category = request.POST['category']
         tags = request.POST['tags']
         pricing = request.POST['pricing']
@@ -352,7 +351,7 @@ def create_s(request, pk_create):
         p.pic_first = pone
         p.pic_second = p_two
         p.pic_third = p_three
-        p.title = title
+        p.title = t
         p.category = category
         p.tags = tags
         p.pricing = pricing

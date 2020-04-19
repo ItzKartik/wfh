@@ -69,7 +69,7 @@
                     </div>
                     <div class="form-group">
                         <label for="slt_category">Select Category</label>
-                        <select class="form-control" id="slt_category">
+                        <select class="form-control" name="category" id="slt_category">
                               <option>Video Editing</option>
                               <option>Web Design</option>
                               <option>Graphic Designing</option>
@@ -78,14 +78,14 @@
                               <option>Etc.....</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <input type="text" value="{{ s.category }}" name="category" id="category_field" class="category_field form-control text-center" placeholder="Graphic Designing, Programming....">
-                    </div>
+{#                    <div class="form-group">#}
+{#                        <input type="text" value="{{ s.category }}" name="category" id="category_field" class="category_field form-control text-center" placeholder="Graphic Designing, Programming....">#}
+{#                    </div>#}
                     <div class="form-group">
                         <input type="text" name="tags" value="{{ s.tags }}" id="tags_field" class="form-control text-center" placeholder="Tags...(Upto 5 max)">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="pricing" required value="{{ s.pricing }}" id="pricing_field" class="form-control text-center" placeholder="Price Of Your Service">
+                        <input type="text" name="pricing" required value="{{ s.pricing }}" id="pricing_field" class="form-control text-center" placeholder="Price Of Your Service in $">
                     </div>
                     <div class="form-group">
                         <input type="text" name="description" value="{{ s.description }}" id="description_field" class="form-control text-center" placeholder="Description...">

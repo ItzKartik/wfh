@@ -1,23 +1,7 @@
 {% extends 'work_for_hire/seller/base.html' %}
-{% block navbar %}
     {% load static %}
+{% block navbar %}
 <style>
-a:hover{
-    color: white;
-    text-decoration: none !important;
-}
-.overlay{
-    display: none;
-    margin-top: -10%;
-    margin-left: -10%;
-    position: absolute;
-    opacity: 0.7;
-    width: 110%;
-    height: 100%;
-    z-index: 1999;
-    color: #fff;
-    background: linear-gradient(#00ff95,#69ffaa,#fff);
-}
 .form-control-file::-webkit-file-upload-button{
             visibility: hidden;
 }
@@ -38,69 +22,147 @@ a:hover{
 }
 
 a{
+    cursor: pointer;
     text-decoration: none !important;
     color: black !important;
     font-weight: 700 !important;
     font-size: 1em !important;
 }
-a:hover{
-    color: #00ff95 !important;
-}
+
 </style>
-    <div class="container text-center inbox" >
-        <div class="jumbotron">
-            {% if u_id %}
-                {% for u in u_id %}
-                    <div class="form inbox-message">
-                        <a><div class="user_id">{{ u.people_id }}</div></a>
+    <br><br>
+    <div class="container" style="background: white; padding: 40px; border-radius: 10px">
+        <div class="container text-center mx-auto justify-content-center" style="width: 20rem">
+            {% if people_id %}
+                {% for us in people_id %}
+                    <a onclick="fetchmymsg('{{ us.inbox_id }}');" style="font-size: 1em" class="people_id">{{ us.user_id }}</a><br><hr>
+                    <script>
+                    function fetchmymsg(inb){
+                        $('.message-container').empty();
+                            $.ajax({
+                                url: "{% url 'message_view' %}",
+                                type: "POST",
+                                enctype: "multipart/form-data",
+                                data:{
+                                    inb: inb,
+                                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                                },
+                                success: function (data) {
+                                    console.log(data);
+                                    let d = JSON.parse(data);
+                                    let i = 0;
+                                    while(i < d.length){
+                                        if(d[i]["fields"]["attachments"] !== 'False') {
+                                            $('.message-container').append("<div class='contact_id'>{{ us.user_id }}</div><br><div class='msg_text'>" + d[i]['fields']['text'] + "</div>"
+                                                + "<img class='msg_attach' src=" + '/media/' + d[i]["fields"]["attachments"] + " alt=''>");
+                                        }
+                                        else{
+                                            $('.message-container').append("<div class='contact_id'>{{ us.user_id }}</div><br><div class='msg_text'>" + d[i]['fields']['text'] + "</div>");
+                                        }
+                                        i = i+1
+                                    }
+                                }
+                            });
+                    }
+                    </script>
                 {% endfor %}
-                {% if message %}
-                    {% for m in message %}
-                        <div class="inbox_id" style="display: none">{{ m.i_id }}</div>
-                    </div>
-                    {% endfor %}
-                {% endif %}
+            {% elif user_id %}
+                {% for us in user_id %}
+                    <a onclick="fetchmymsg('{{ us.inbox_id }}');" style="font-size: 1em" class="people_id">{{ us.people_id }}</a><br><hr>
+                    <script>
+                    function fetchmymsg(inb){
+                        $('.message-container').empty();
+                            $.ajax({
+                                url: "{% url 'message_view' %}",
+                                type: "POST",
+                                enctype: "multipart/form-data",
+                                data:{
+                                    inb: inb,
+                                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                                  {#csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+                                },
+                                success: function (data) {
+                                    console.log(data);
+                                    let d = JSON.parse(data);
+                                    let i = 0;
+                                    while(i < d.length){
+                                        if((d[i]["fields"]["attachments"] !== 'False') && (d[i]["fields"]["attachments"] !== '')) {
+                                            $('.message-container').append("<div class='msg_text'>" + d[i]['fields']['text'] + "</div>"
+                                                + "<img class='msg_attach' src=" + '/media/' + d[i]["fields"]["attachments"] + " alt=''><hr>");
+                                        }
+                                        else{
+                                            $('.message-container').append("<div class='msg_text'>" + d[i]['fields']['text'] + "</div><hr>");
+                                        }
+                                        i = i+1
+                                    }
+                                }
+                            });
+                    }
+                    </script>
+                {% endfor %}
             {% else %}
-                <div class="jumbotron"><h1>No Chats Are Their</h1></div>
             {% endif %}
         </div>
-            <div class="message-container"></div>
-                <div class="form-group">
-                    <label>
-                        <input type="text"  class="itext form-control"/>
-                    </label><br>
-                    <input type="file" class="form-control ifile form-control-file"/><br><br>
-                    <button class="btn btn-outline-success send_btn">Send</button>
-                </div>
     </div>
-    <script>
-    $('.context_btn').hide();
+    <div class="container text-center justify-content-center mx-auto">
+                <div class="message-container text-center">
+                    {% if msg %}
+                        {% for m in msg %}
+                            <div>
+                                <div class="msg_text">{{ m.text }}</div>
+                                {% if m.attachments %}
+                                    <img class="msg_attach" src="{{ m.attachments.url }}" alt="">
+                                {% else %}
 
-    </script>
-    <script>
-    $('.send_btn').on('click', function () {
-        $.ajax({
-                url: "{% url 'inbox_view' %}",
-                type: 'POST',
-                data: {
-                    text: $('.itext').val(),
-                    attach: $('.ifile').val(),
-                    i_id: $('.inbox_id').val()
-                },
-                success: function (data) {
-                    $('.message-container').append('<div>' + $('.itext').val(), + '</div>',
-                    '<div><img src=' + $('.ifile').val(), + '></div>');
-                    {#let d = JSON.parse(data);#}
-                    {#console.log(d);#}
-                    {#let i = 0;#}
-                    {#while(i < d.length){#}
-                    {#    $('.inbox_id').append('<div>' + d[i]["pk"] + '</div>');#}
-                    {#    $('.user_id').append('<div>' + d[i]["fields"]["people_id"] + '</div>');#}
-                    {#    i = i + 1;}#}
-                }
-            });
-    });
-    </script>
+                                {% endif %}
+                            </div><hr>
+                        {% endfor %}
+                    {% else %}
+                    {% endif %}
+                </div>
+            </div>
+    <style>
+        .msg_text{
+            font-size: 1em;
+            font-family: Roboto;
+            font-weight: 700;
+        }
+        .contact_id{
+            text-align: left;
+            font-size: 1em;
+            font-family: Roboto;
+            font-weight: 700;
+        }
+        .msg_attach{
+            width: 20%;
+            border: 2px;
+            border-radius: 5px;
+        }
+    </style>
+    {#                            <script>#}
+    {#{#                                $('.send_btn').on('click', function () {#}
+    {#{#                                    let tx = $('.itext').val();#}
+    {#{#                                    let fl = $('.ifile').val();#}
+    {#{##}
+    {#{#                                    $.ajax({#}
+    {#{#                                        url: "{% url 'inbox_view' %}",#}
+    {#{#                                        type: 'POST',#}
+    {#{#                                        enctype: 'multipart/form-data',#}
+    {#{#                                        data: {#}
+    {#{#                                            itext: tx,#}
+    {#{#                                            ifile: fl,#}
+    {#{#                                            i_id: '{{ u.inbox_id }}',#}
+    {#{#                                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
+    {#{#                                        },#}
+    {#{#                                        success: function (data) {#}
+    {#{#                                            $('.itext').empty();#}
+    {#{#                                            $('.ifile').empty();#}
+    {#{#                                            $('.message-container').append("<div><a>" + tx + "</a>"#}
+    {#{#                                            + "<img src=" + data[1] + "></div>"+"<hr>");#}
+    {#{#                                        }#}
+    {#{#                                    });#}
+    {#{#                                });#}
+    {#{#                            </script>#}
 {% endblock %}
 
 

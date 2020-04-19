@@ -1,39 +1,35 @@
 {% extends 'work_for_hire/seller/base.html' %}
-{% block navbar %}
     {% load tz %}
+{% block navbar %}
     <style>
-    body{
-        font-weight: 600 !important;
-    }
     .create_s{
         display: none !important;
     }
-    a{
-        color: black !important;
-        font-weight: 700;
-        font-family: "Elsie";
-        font-size: 1.5rem;
-    }
+
 </style>
     {% if o %}
-            <div class="container" style="width: 30rem">
-                <ul class="text-center" style="list-style-type:none;">
+        {% if b %}
+            <div class="container" style="width: 30rem; background: white; padding: 40px; border-radius: 10px">
+                <ul class="text-center" style="list-style-type: none;">
                     <li>
-                        <div class="jumbotron">
+                        <div class="">
                         {% for o in o %}
-                            {% if user.username == o.seller  %}
-                                <a class="order_id" href="{% url 'purchase_services' srv_pk=o.id %}">Order Of {{ o.order_title }}</a>
-                            {% else %}
-                                <a class="order_id" href="{% url 'purchase_services' srv_pk=o.id %}">Order Of {{ o.order_title }}</a>
-                            {% endif %}<br><br>
+                            <h1>Your Orders</h1>
+                            <a class="order_id" href="{% url 'purchase_services' srv_pk=o.id %}">Order Of {{ o.order_title }}</a><br><br>
+                        {% endfor %}
+                        {% for b in b %}
+                            <h1>Bought Orders</h1>
+                                <a class="order_id" href="{% url 'purchase_services' srv_pk=b.id %}">Order Of {{ b.order_title }}</a><br><br>
                         {% endfor %}
                         </div>
                     </li>
                 </ul>
             </div>
+        {% else %}
+        {% endif %}
     {% else %}
         {% if o_details %}
-            <div class="order-container container text-center">
+            <div class="order-container container text-center" style="background: white; padding: 40px; border-radius: 20px">
                 <div class="title_show"><h1>{{ o_details.order_title }}</h1></div><br>
                 <div class="user_show">Seller : {{ o_details.seller }}</div><br>
                 <div class="pricing_show">Price : ${{ o_details.order_pricing }}</div><br>
@@ -85,21 +81,9 @@
                     }
                 });
             });
-                {#$.ajax({#}
-                {#    url: '{% url 'chatting' order_id=o_details.id %}',#}
-                {#    success: function (data) {#}
-                {#        let chat = JSON.parse(data);#}
-                {#        console.log(chat);#}
-                {#        let i = 0;#}
-                {#        while(i < chat.length){#}
-                {#            $('.receive-container').append('<div>' + chat[i]["fields"]["text"] + '<div class="text-right" style="font-size:0.9em">' + chat[i]["fields"]["created_by"] + '</div></div><hr>');#}
-                {#            i = i+1;#}
-                {#        }#}
-                {#    }});#}
-
             </script>
             {% else %}
-            <div class="jumbotron text-center"><h1>Currently, You Don't Have Any Orders !!!</h1></div>
+            <div class="container text-center" style="background: white; padding: 40px; border-radius: 10px"><h1>Currently, You Don't Have Any Orders !!!</h1></div>
         {% endif %}
     {% endif %}
 {% endblock %}

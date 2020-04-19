@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import p_service, port_folio, orders, order_chat, buyer_request, inbox_members, inbox
+from .models import p_service, port_folio, orders, order_chat, buyer_request, inbox_members, direct_message
 
 
-admin.site.register(inbox)
+admin.site.register(direct_message)
 admin.site.register(inbox_members)
 admin.site.register(buyer_request)
 admin.site.register(order_chat)

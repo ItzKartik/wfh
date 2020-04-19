@@ -1,176 +1,126 @@
-{% extends 'work_for_hire/seller/base.html' %}
-{% block navbar %}
-    {% load static %}
-<style>
-.context_btn{
-    display: none !important;;
-}
-.imgs{
-    width: 40%;
-    margin-top: 10% !important;
-}
-a:hover{
-    color: white;
-    text-decoration: none !important;
-}
-.btn{
-    margin-top: 2% !important;
-}
+{% load static %}
+<html>
+    <head>
+        <title>
+          Work From Home
+        </title>
+        <meta charset="UTF-8">
+        <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <link rel="stylesheet" href="{% static 'stylesheet/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'stylesheet/animate.css' %}">
+        <link rel="stylesheet" href="{% static 'stylesheet/style.css' %}">
+        <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Emblema+One&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;0,500;1,200;1,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
+        <link href="https://fonts.googleapis.com/css?family=Lora|Lobster|Roboto|Dancing Script|Abril Fatface|&display=swap" rel="stylesheet">
 
-.require_submit{
-    text-align: center;
-    width: 30%;
-    border-radius: 20px;
-    top: 35%;
-    left: 35%;
-    right: 35%;
-    padding: 40px;
-    position: absolute;
-    z-index: 2000;
-    color: #fff;
-    background: linear-gradient(#00ff95,#69ffaa,#fff);
-}
-.fa-close:hover{
-    color: white !important;
-}
-#purchase_services{
-    text-align: center;
-    display: none;
-    width: 25%;
-    border-radius: 20px;
-    top: 20%;
-    left: 40%;
-    padding: 30px;
-    position: absolute;
-    z-index: 2000;
-    color: #fff;
-    background: linear-gradient(#00ff95,#69ffaa,#fff);
-}
+    </head>
+    <style>
 
-
-.column {
-  width: 20%;
-  padding: 0 40px;
-}
-
-.seller_account{
-    display: block;
-}
-
-.card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    background-color: whitesmoke;
-    padding: 12px;
-    text-align: center;
-}
-.f{
-    width: 80%;
-}
-.btn-sec{
-    width: 20%;
-}
-@media screen and (max-width: 600px) {
-    .overlay{
-        top: 0 !important;
-        left: 0 !important;
-        width: 110% !important;
-    }
-    .f{
-        width: 100%;
-        margin-bottom: 10%;
-    }
-    .btn-sec{
-        width: 100%;
-    }
-    #purchase_services{
-        width: 100%;
-        border-radius: 6%;
-        top: 30%;
-        left: 0%;
-        right: 0%;
-        padding: 40px;
-        position: absolute;
-        z-index: 2000;
-        color: #fff;
-        background: linear-gradient(#00ff95,#69ffaa,#fff);
-    }
-
-}
-.overlay{
-    display: none;
-    margin-top: -10%;
-    margin-left: -10%;
-    position: absolute;
-    opacity: 0.7;
-    width: 110%;
-    height: 100%;
-    z-index: 1999;
-    color: #fff;
-    background: linear-gradient(#00ff95,#69ffaa,#fff);
-}
-.form-control-file::-webkit-file-upload-button{
-            visibility: hidden;
-}
-.form-control-file{
-    text-align: center;
-    display: inline-block;
-    border: 1px solid #000;
-    border-radius: 40px;
-    padding: 5px 5px;
-    outline: none;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    cursor: pointer;
-    text-shadow: 1px 1px #fff;
-    font-weight: 700;
-    font-size: 1em;
-}
-.rw{
-    text-align: center;
-    margin: 3em;
-}
-.card{
-    margin: 0.4em;
-    background-color: white !important;
-}
-a{
-    text-decoration: none !important;
-    color: black !important;
-    font-weight: 700 !important;
-    font-size: 1em !important;
-}
-a:hover{
-    color: #00ff95 !important;
-}
-.inbox{
-    background-color: white;
-    border-radius: 20px;
-    z-index: 2000;
-    position: absolute;
-}
-</style>
-    <div class="overlay"></div>
-    <div class="container text-center inbox" style="width: 15rem; display: none">
-        <i class="fas fa-times cls_inbox"></i>
+    </style>
+    <body>
+     <div class="overlay"></div>
+     <div class="inbox container text-center justify-content-center mx-auto" style="z-index: 10;height: 22rem; width: 20rem; padding: 30px; display: none">
+        <div onclick="sec_hide('.inbox');" class="text-right mr-auto"><i class="fas fa-times cls_inbox"></i></div>
         <div class="form inbox-message">
-            <a><div class="user_id"></div></a>
-            <div class="inbox_id" style="display: none"></div>
-            <div class="view_msg" style="display: none">View Message</div>
+            <h3><b style="font-family: Dancing Script; font-size: 1.5em">Send Message</b></h3><br>
+            <div class="success_msg"></div>
+            <div class="view_msg" style="display: none"><a>View Message</a></div>
         </div>
         <div class="message-container"></div>
-            <div class="form-group">
+            <form class="form-group iform">
                 <label>
-                    <input type="text" class="form-control"/>
+                    <input type="text" class="itext form-control" placeholder="Your Message..."/>
                 </label>
-                <input type="file" class="form-control form-control-file"/><br>
-                <button class="btn btn-outline-success send-btn">Send</button>
-            </div>
+                <input type="file" class="form-control ifile form-control-file" style="width: 11rem"/><br><br>
+                <button class="btn btn-outline-primary sendbtn">Send</button>
+            </form>
     </div>
-    <div class="container">
-    <div class="row rw">
+     <div class="container-fluid register_section text-center" style="position: absolute; display: none;  z-index: 10">
+                <div class="mx-auto" style="position: relative; width: 15rem;">
+                    <div class="text-right mr-auto"><i onclick="sec_hide('.register_section');" class="fas fa-times cls_inbox"></i></div>
+                    <h1>Register Here</h1><br>
+                     <form class="register_form section" id="register_form"  action="{% url 'register' %}" enctype="multipart/form-data" method="POST">
+                         {% csrf_token %}
+                         <div class="form-group">
+                             <input id="username" required name="username" class="form-control text-center" placeholder="Username">
+                         </div>
+                         <div class="form-group" style="display: none">
+                             <input id="bot_detector" name="bot" class="form-control text-center">
+                         </div>
+                         <div class="form-group">
+                             <input type="email" id="email" required name="email" class="form-control text-center" aria-describedby="emailHelp" placeholder="Email">
+                         </div>
+                         <div class="form-group">
+                             <input type="password" name="password" required class="text-center form-control" id="password" placeholder="Password">
+                         </div><br>
+                         <button type="submit" class="reg_btn btn btn-primary mb-2">Submit</button>
+                     </form>
+                </div>
+            </div>
+     <div class="container-fluid login_section text-center justify-content-center mx-auto" style="position: absolute; display: none; z-index: 10">
+                <div class="mx-auto" style="position: relative; width: 15rem;">
+                    <div class="text-right mr-auto"><i onclick="sec_hide('.login_section');" class="fas fa-times cls_inbox"></i></div>
+                    <div class="col-md">
+                    <h1>Login Here</h1><br>
+                     <form method="post" action="{% url 'login' %}" enctype="multipart/form-data" id="login_form" class="section">
+                         {% csrf_token %}
+                         <div class="form-group">
+                             <input type="email" name="email" required class="form-control text-center" placeholder="Email">
+                         </div>
+                         <div class="form-group">
+                             <input type="password" name="password" required class="text-center form-control" placeholder="Password">
+                         </div><br>
+                         <button type="submit" class="btn btn-primary mb-2">Submit</button>
+                     </form>
+                    </div>
+                </div>
+            </div>
+     <div class="container-fluid text-center justify-content-center mx-auto" style="padding: 20px;">
+          <section class="col-md-7 img-box">
+                <div class="animated img-box fc slider1 active"><img class="slider_img1" src="{% static 'img/slider_img1.png' %}" alt="Some Error Occured..."></div>
+                <div class="animated img-box fc slider2"><img class="slider_img1" src="{% static 'img/slider_img2.png' %}" alt="Some Error Occured..."></div>
+                <div class="animated img-box fc slider3"><img class="slider_img1" src="{% static 'img/slider_img3.png' %}" alt="Some Error Occured..."></div>
+          </section>
+            <div class="container-fluid" style="padding: 20px;">
+              <div class="col-sm title"><a href="{% url 'index' %}" class="navabr-brand"><h1 style="font-family: 'Emblema One'; font-size: 4rem;">WFH</h1></a></div>
+              <div class="row ml-auto tabs" style="width: 38rem; z-index: 10;">
+                  {% if user.is_authenticated %}
+                      <div class="col-sm inbox_btn" style="z-index: 3"><div class="nav-link"><a href="{% url 'inbox_view' %}">Inbox<hr></a></div></div>
+                      <div class="col-sm switch"><div class="nav-link"><a href="{% url 'seller' %}">Switch<hr></a></div></div>
+                      <div class="col-sm order"><div class="nav-link"><a href="{% url 'order_show' %}">Orders<hr></a></div></div>
+{#                      <div class="col-sm settings"><div class="nav-link"><a href="#">Settings<hr></a></div></div>#}
+{#                      <div class="col-sm post_rst"><div class="nav-link"><a href="{% url 'buyer_rst_create' %}">Post<hr></a></div></div>#}
+{#                      <div class="col-sm services"><div class="nav-link"><a href="{% url 'seller_services' %}">Services<hr></a></div></div>#}
+                      <div class="col-sm rst"><div class="nav-link"><a href="{% url 'buyer_rst_show' %}">Requests<hr></a></div></div>
+{#                      <div class="col-sm portfolio_tab"><div class="nav-link portfolio_btn"><a>Portfolio<hr></a></div></div>#}
+{#                      <div class="col-sm report"><div class="nav-link "><a href="#">Report<hr></a></div></div>#}
+                      <div class="col-sm logout"><div class="nav-link "><a href="{% url 'logout' %}">Logout<hr></a></div></div>
+                {% else %}
+                        <div class="col-sm register"><div class="nav-link"><a href="#">Register<hr></a></div></div>
+                        <div class="col-sm login"><div class="nav-link"><a href="#">Login<hr></a></div></div>
+                {% endif %}
+              </div>
+              </div>
+            </div>
+            <div class="container nvtxt text-wrap mx-auto justify-content-center">
+              <span class="nvtext__bg">WORK FROM HOME</span><br>
+              <p class="nvtext__small">With Us </p>
+            </div>
+{#        <a class="left" onclick="active_cell();"><svg class="bi bi-chevron-left" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">#}
+{#          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 010 .708L5.707 8l5.647 5.646a.5.5 0 01-.708.708l-6-6a.5.5 0 010-.708l6-6a.5.5 0 01.708 0z" clip-rule="evenodd"/>#}
+{#        </svg></a>#}
+{#        <a class="right" onclick="active_cell();"><svg class="bi bi-chevron-right" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">#}
+{#          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L10.293 8 4.646 2.354a.5.5 0 010-.708z" clip-rule="evenodd"/>#}
+{#        </svg></a>#}
 
-    {% for s in srv %}
-                <div class="srv_card card" style="width: 15rem;">
+    <div class="container" style="z-index: 2 !important;">
+        <div class="row rw">
+            {% for s in srv %}
+                <div class="srv_card" style="width: 15rem; margin: 5px; padding: 12px; background: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
                     <a href="{% url 'services_pk' s_pk=s.id %}">
                         {% if s.pic_second %}
                             <img class="card-img-top" alt="img2" src="{{ s.pic_second.url }}">
@@ -198,6 +148,7 @@ a:hover{
     <div class="container row order_container">
         <div class="f text-center">
             <h1 style="display: none">{{ s.id }}</h1>
+            <h1>User:-{{ s.seller_id }}</h1>
             <h1>{{ s.title }}</h1>
             <h1>{{ s.tags }}</h1>
             <h1>{{ s.category }}</h1>
@@ -216,23 +167,47 @@ a:hover{
             <a href="{% url 'index' %}"><u>Go Back</u></a><br>
             {% if user.is_authenticated %}
                 <button type="button" class="purchase_btn btn btn-outline-primary">Purchase</button><br>
-                <button type="button" class="btn btn-outline-primary contact-btn"><a>Contact</a></button><br>
+                {% if user.username == s.seller_id %}
+
+                {% else %}
+                    <button type="button" class="btn btn-outline-primary contact-btn"><a>Contact</a></button><br>
+                {% endif %}
                     <script>
                         $('.contact-btn').on('click', function () {
                             $.ajax({
                                 url: "{% url 'contact' people_id=s.seller_id %}",
                                 success: function (data) {
-                                    $('.overlay').show();
-                                    $('.order_container').hide();
-                                    $('.inbox').show();
-                                    $('.cls_inbox').click(function () {
-                                        $('.inbox').hide();
-                                        $('.overlay').hide();
-                                        $('.order_container').show();
-                                    });
-                                    $('.inbox_id').append('<div>' + data + '</div>');
-                                    $('.user_id').append('{{ s.seller_id }}');
-
+                                    if (data === "Change"){
+                                        console.log("Change");
+                                        window.location.href = {% url 'inbox_view' %};
+                                    }
+                                    else{
+                                        $('.overlay').show();
+                                        $('.inbox').show();
+                                        $('.i_id').append(data);
+                                        $('.user_id').append('{{ s.seller_id }}');
+                                        $('.sendbtn').on('click', function (e) {
+                                            e.preventDefault();
+                                            $.ajax({
+                                                url: "{% url 'inbox_view' %}",
+                                                type: 'POST',
+                                                enctype: "multipart/form-data",
+                                                data: {
+                                                    text: $('.itext').val(),
+                                                    file: $('.ifile').val(),
+                                                    i_id: data,
+                                                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                                                },
+                                                success: function (data) {
+                                                    hide('.iform');
+                                                    hide('.user_id');
+                                                    hide('.inbox_id');
+                                                    show('.view_msg');
+                                                    $('.success_msg').append(data);
+                                                }
+                                            });
+                                        });
+                                    }
                                 }
                             });
                         });
@@ -251,7 +226,7 @@ a:hover{
                 </div>
             </div>
         </div>
-        <div id="purchase_services" class="require_submit container text-center">
+        <div class="requirement_submit container text-center">
             <div class="text-center">
                     <b><h2>Submit Your Requirements</h2><br></b>
                     <form method="post" class="form" enctype="multipart/form-data" action="{% url 'purchase_services' srv_pk=s.id %}">
@@ -266,13 +241,11 @@ a:hover{
                     </form>
             </div>
         </div>
-    <script
-    src="https://www.paypal.com/sdk/js?client-id=ATV8ChoBtwpSV3OMHinaxwCN0GMk6PL_Ql5RBaPzRwmtxBRnqzPIwwNOa7YdWXOC3nKY524zGXbga_-K"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.
+    <script src="https://www.paypal.com/sdk/js?client-id=ATV8ChoBtwpSV3OMHinaxwCN0GMk6PL_Ql5RBaPzRwmtxBRnqzPIwwNOa7YdWXOC3nKY524zGXbga_-K"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.
   </script>
     <script>
     paypal.Buttons({
         createOrder: function(data, actions) {
-      // This function sets up the details of the transaction, including the amount and line item details.
           return actions.order.create({
             purchase_units: [{
               amount: {
@@ -282,15 +255,12 @@ a:hover{
           });
         },
         onApprove: function(data, actions) {
-      // This function captures the funds from the transaction.
       return actions.order.capture().then(function(details) {
-        // This function shows a transaction success message to your buyer.
         alert('Transaction completed !!!');
-          hide('.overlay');
           inout('#purchase_services');
-          inout('.require_submit');
-          outin('.require_submit');
-          show('.overlay');
+          inout('.requirement_submit');
+          outin('.requirement_submit');
+          hide('.overlay');
       });
     }
     }).render('#paypal-button-container');
@@ -303,7 +273,7 @@ a:hover{
             outin('#purchase_services');
             show('.overlay');
         });
-        $('.fa-close').click(function () {
+        $('.close').click(function () {
             inout('#purchase_services');
             hide('.overlay');
         });
@@ -316,9 +286,103 @@ a:hover{
         $('.sidenav').hide();
     </script>
         {% endfor %}
+    </body>
+    <script>
+    function outin(e){
+        $(e).removeClass('animated fadeOutLeft');
+        $(e).show();
+        $(e).addClass('animated fadeInLeft');
+    }
+    function inout(e){
+        $(e).removeClass('animated fadeInLeft');
+        $(e).addClass('animated fadeOutLeft');
+    }
+    function hide(e){
+        $(e).hide();
+    }
+    function show(e){
+        $(e).show();
+    }
+    function nav(){
+        inout('.sidenav');
+        show('.barbtn');
+        hide('.clsbtn');
+    }
+    function sec_hide(ele){
+        inout('.overlay');
+        inout(ele);
+    }
+    $('.barbtn').on('click', function () {
+            outin('.sidenav');
+            $('.barbtn').hide();
+            $('.clsbtn').show();
+    });
+    $('.clsbtn').on('click', function () {
+            inout('.sidenav');
+            $('.clsbtn').hide();
+            $('.barbtn').show();
+    });
+    $('.register').click(function () {
+        inout('.overlay');
+        outin('.overlay');
+        inout('.login_section');
+        $('.srv_card').remove();
+        outin('.register_section');
+    });
+    $('.login').click(function () {
+        inout('.overlay');
+        outin('.overlay');
+        inout('.register_section');
+        $('.srv_card').remove();
+        outin('.login_section');
+    });
+     $('.portfolio_btn').click(function () {
+         inout('.overlay');
+         outin('.overlay');
+         inout('.rst_container');
+         inout('.context_btn');
+         inout('.order-container');
+        inout('.services_card');
+        inout('.portfolio_id');
+        outin('#portfolio_form');
+    });
+    $(document).ready(function(){
+          setInterval(() => {
+            active_cell();
+            console.log('chnage');
+          }, 3000);
+      });
+      function active_cell(){
+          var cell1 = $('.fc').eq(0).hasClass('active');
+          var cell2 = $('.fc').eq(1).hasClass('active');
+          var cell3 = $('.fc').eq(2).hasClass('active');
+          if(cell1 == true){
+            fade('.slider1', '.slider2');
+          }
+          else if(cell2 == true){
+            fade('.slider2', '.slider3');
+          }
+          else if(cell3 == true){
+            fade('.slider3', '.slider1');
+          }
+          else{
+            location.reload(true);
+          }
+      }
 
+      function fade(out1, in1){
+        $('.right').attr("disabled", true);
+        $(out1).addClass('fadeOutLeft');
+        $(in1).addClass('fadeInLeft active');
+        setTimeout(() => {
+          $(out1).removeClass('fadeOutLeft active');
+          $(in1).removeClass('fadeInLeft');
+          $('.right').removeAttr("disabled");
+        }, 1000);
+      }
+    </script>
+</html>
 
-{% endblock %}
 
 
 
