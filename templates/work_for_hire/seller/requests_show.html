@@ -2,19 +2,18 @@
 {% load tz %}
 {% get_current_timezone as TZ %}
 {% block navbar %}
-    <div class="rst_container container" style="background: white; padding: 40px; border-radius: 10px">
-        {% if p_details %}
-            {% if rst %}
+
+        {% if p_details or rst %}
+            <div class="rst_container container">
                 {% for p in p_details %}
                     {% for r in rst %}
                         {% if p.category == r.category %}
                             {% if user.username == r.user %}
-
                             {% else %}
-                                <div class="container text-center">
+                                <div class="container text-center" style="background: white; padding: 40px; border-radius: 10px">
                                         <div class="row" style="padding: 20px 0px">
                                             <span class="text-left"><i><u>{{ r.user|upper }}</u></i></span>
-                                            <div class="text-left col">Request:- {{ r.rst }}</div>
+                                            <div class="text-left col rst_con">{{ r.rst }}</div>
                                             <div class="col text-right">
                                                 {% if tm %}
                                                     <p>{{ r.created_by|timezone:tm }}</p>
@@ -23,29 +22,31 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                        <button class="btn btn-outline-primary">Accept</button><hr>
-                                </div>
+                                        <button class="btn btn-outline-primary">Accept</button>
+                                </div><br>
                             {% endif %}
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
-            {% else %}
-                <h1 class="text-center justify-content-center mx-auto">No Request Pending...</h1>
-            {% endif %}
         {% endif %}
     </div>
     <script>
-    $('.context_btn').hide();
-        $.ajax({
-           url:"{% url 'buyer_rst_show' %}",
-           success: function (data) {
-               let rst = JSON.parse(data);
-               console.log(rst);
-               let i = 0;
-               while(i<rst.length){
-                   $('.rst_container').append('<i>' + rst[i]["fields"]["user"] + '<br>' + rst[i]["fields"]["rst"] + '</i><br>')
-               }
-           }});
+            $(document).ready(function () {
+               if($('.rst_con').html() === ''){
+                  hide('.rst_container');
+                }
+            });
     </script>
+    {#$('.context_btn').hide();#}
+    {#    $.ajax({#}
+    {#       url:"{% url 'buyer_rst_show' %}",#}
+    {#       success: function (data) {#}
+    {#           let rst = JSON.parse(data);#}
+    {#           console.log(rst);#}
+    {#           let i = 0;#}
+    {#           while(i<rst.length){#}
+    {#               $('.rst_container').append('<i>' + rst[i]["fields"]["user"] + '<br>' + rst[i]["fields"]["rst"] + '</i><br>')#}
+    {#           }#}
+    {#       }});#}
 
 {% endblock %}

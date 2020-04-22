@@ -1,0 +1,237 @@
+{% extends 'work_for_hire/seller/base.html' %}
+{% load static %}
+{% block navbar %}
+    <style>
+    @media(max-width: 1025px) {
+        .img-box{
+            text-align: left !important;
+            top: -20px;
+            width: 400px;
+        }
+    }
+    @media(max-width: 780px) {
+        .img-box{
+            margin-top: -30px !important;
+            width: 400px !important;
+        }
+    }
+    @media(max-width: 500px) {
+        .box_info{
+            width: 100% !important;
+        }
+        .img-box{
+            text-align: center !important;
+            width: 300px !important;
+        }
+    }
+    .img-box{
+        text-align: left;
+        width: 600px;
+        height: 400px !important;
+    }
+    .inbox{
+        height: 30rem;
+    }
+    </style>
+    <link rel="stylesheet" href="{% static 'stylesheet/style.css' %}">
+    <div class="inbox col-md-12 text-center justify-content-center mx-auto" style="top: 20%; position: absolute; z-index: 4; display: none;">
+        <div class="mx-auto in" style="position: relative; height: 25rem; width: 20rem;  padding: 30px;">
+            <div onclick="sec_hide('.inbox');" class="text-right mr-auto"><i class="fas fa-times cls_inbox"></i></div>
+            <div class="inbox-message">
+                <h3 class="snd_msg"><b style="font-family: 'Dancing Script'; font-size: 1.5em">Send Message</b></h3><br>
+                <h4 class="success_msg" style="display: none;">Message Sent !!!</h4><br>
+                <h5 class="view_msg" style="display: none;"><a href="{% url 'inbox_view' %}">View Message</a></h5>
+            </div>
+            <div class="message-container"></div>
+            <form class="form-group iform" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group i_id_grp" style="display: none">
+
+                </div>
+                <label>
+                    <input type="text" name="i_text" class="i_text form-control" placeholder="Your Message..."/>
+                </label>
+                <input type="file" name="i_file" class="form-control i_file form-control-file" style="width: 11rem"/><br><br>
+                <button type="submit" name="submit" class="btn btn-outline-primary sendbtn">Send</button>
+            </form>
+        </div>
+    </div>
+    <div class="container row order_container">
+        {% for s in service_pk %}
+        <div class="text-center mx-auto justify-content-center box_info" style="width: 50%">
+            <div class="container text-left">
+                <h1 style="display: none">{{ s.id }}</h1>
+                <h1><i><u>{{ s.seller_id }}</u></i></h1><br>
+                <h1>{{ s.title }}</h1><br>
+                <div class="img-box text-center mx-auto justify-content-center" style="position: relative;">
+                    {% if s.pic_first and s.pic_second and s.pic_third %}
+                        <div class="animated img-box fc slider1 active"><img class="slider_img1" src="{{ s.pic_first.url }}" alt="Some Error Occured..."></div>
+                        <div class="animated img-box fc slider2"><img class="slider_img1" src="{{ s.pic_second.url }}" alt="Some Error Occured..."></div>
+                        <div class="animated img-box fc slider3"><img class="slider_img1" src="{{ s.pic_third.url }}" alt="Some Error Occured..."></div>
+                    {% else %}
+                        <div class="animated img-box fc slider1 active"><img class="slider_img1" src="{% static 'img/logo.png' %}" alt="Some Error Occured..."></div>
+                        <div class="animated img-box fc slider2"><img class="slider_img1" src="{% static 'img/logo.png' %}" alt="Some Error Occured..."></div>
+                        <div class="animated img-box fc slider3"><img class="slider_img1" src="{% static 'img/logo.png' %}" alt="Some Error Occured..."></div>
+                    {% endif %}
+                </div>
+                <h3 style="margin-top: 10%;">{{ s.tags }}</h3><br>
+                <h1><b>$&nbsp;{{ s.pricing }}</b></h1><br>
+                <h1>{{ s.delivery_time }}&nbsp;days</h1>
+            </div>
+        </div>
+        <div class="text-center justify-content-center mx-auto col-md-2">
+            <button type="button" class="btn btn-outline-primary"><a href="{% url 'index' %}">Go Back</a></button><br>
+            {% if user.is_authenticated %}
+                {% if user.username == s.seller_id %}
+
+                {% else %}
+                    <button type="button" class="purchase_btn btn btn-outline-primary">Order Now</button><br>
+                    <button type="button" class="btn btn-outline-primary contact-btn">Contact Now</button><br>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div id="purchase_services" class="container text-center">
+        <div class="close"><i class="fas fa-times"></i></div>
+        <div class="text-center">
+            <h1 class="text-center">Pay&nbsp;${{ s.pricing }}</h1>
+            <div class="card-body">
+                <div class="card-title"><b>{{ s.title }}</b></div>
+                <div id="paypal-button-container"></div>
+            </div>
+        </div>
+    </div>
+    <div class="requirement_submit container text-center">
+        <div class="text-center">
+            <b><h2>Submit Your Requirements</h2><br></b>
+            <form method="post" class="form" enctype="multipart/form-data" action="{% url 'purchase_services' srv_pk=s.id %}">
+                {% csrf_token %}
+                <div class="text-center">
+                    <textarea style="padding: 15px" required type="text" name="text" class="form-contorl-lg form-control" placeholder="Your Requirements..."></textarea>
+                </div><br>
+                <div class="text-center">
+                    <input type="file" required class="form-control-file" name="image">
+                </div><br>
+                <button type="submit" class="btn btn-outline-success">Continue</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=ATV8ChoBtwpSV3OMHinaxwCN0GMk6PL_Ql5RBaPzRwmtxBRnqzPIwwNOa7YdWXOC3nKY524zGXbga_-K"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.</script>
+    <script>
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: '{{s.pricing}}.00'
+              }
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        alert('Transaction completed !!!');
+          inout('#purchase_services');
+          inout('.requirement_submit');
+          outin('.requirement_submit');
+      });
+    }
+    }).render('#paypal-button-container');
+  </script>
+    <script>
+    $('.context_btn').hide();
+        $('.purchase_btn').click(function () {
+            hide('.overlay');
+            inout('#purchase_services');
+            outin('#purchase_services');
+            show('.overlay');
+        });
+        $('.close').click(function () {
+            inout('#purchase_services');
+            hide('.overlay');
+        });
+        $('.require_btn').click(function () {
+            hide('.overlay');
+            inout('#purchase_services');
+            inout('.require_submit');
+            outin('.require_submit');
+            show('.overlay');});
+        $('.sidenav').hide();
+    </script>
+    <script>
+    $(document).ready(function(){
+          setInterval(() => {
+            active_cell();
+            console.log('chnage');},3000);
+      });
+      function active_cell(){
+          var cell1 = $('.fc').eq(0).hasClass('active');
+          var cell2 = $('.fc').eq(1).hasClass('active');
+          var cell3 = $('.fc').eq(2).hasClass('active');
+          if(cell1 == true){
+            fade('.slider1', '.slider2');
+          }
+          else if(cell2 == true){
+            fade('.slider2', '.slider3');
+          }
+          else if(cell3 == true){
+            fade('.slider3', '.slider1');
+          }
+          else{
+            location.reload(true);
+          }
+      }
+
+      function fade(out1, in1){
+        $('.right').attr("disabled", true);
+        $(out1).addClass('fadeOutLeft');
+        $(in1).addClass('fadeInLeft active');
+        setTimeout(() => {
+          $(out1).removeClass('fadeOutLeft active');
+          $(in1).removeClass('fadeInLeft');
+          $('.right').removeAttr("disabled");
+        }, 1000);
+      }
+    </script>
+    <script>
+                        $('.contact-btn').on('click', function (e) {
+                            e.preventDefault();
+                            $.ajax({
+                                url: "{% url 'contact' people_id=s.seller_id %}",
+                                success: function (data) {
+                                    $('.overlay').show();
+                                    $('.inbox').show();
+                                    if (data === "Change"){
+                                        console.log("Change");
+                                        window.location.href = {% url 'inbox_view' %};
+                                    }
+                                    else{
+                                        $('.i_id_grp').append('<input type="text" name="i_id" value='+ data +' class="i_id form-control" placeholder="Your Message..."/>');
+                                        {#$('.user_id').append('{{ s.seller_id }}');#}
+                                        $('.iform').on('submit', function (e) {
+                                            e.preventDefault();
+                                            let form_data = new FormData(this);
+
+                                            $.ajax({
+                                                url: "{% url 'inbox_view' %}",
+                                                type: 'POST',
+                                                enctype: "multipart/form-data",
+                                                contentType: false,
+                                                processData: false,
+                                                data: form_data,
+                                                success: function() {
+                                                    hide('.iform');
+                                                    hide('.snd_msg');
+                                                    show('.view_msg');
+                                                    show('.success_msg');
+                                                }
+                                            });
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                    </script>
+{% endfor %}
+{% endblock %}

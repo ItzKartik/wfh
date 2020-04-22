@@ -5,287 +5,117 @@
           Work From Home
         </title>
         <meta charset="UTF-8">
-        <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+{#        <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">#}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
         <link rel="stylesheet" href="{% static 'stylesheet/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'stylesheet/animate.css' %}">
         <link rel="stylesheet" href="{% static 'stylesheet/style.css' %}">
+        <link rel="stylesheet" href="{% static 'stylesheet/cards.css' %}">
         <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Emblema+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;0,500;1,200;1,700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
-        <link href="https://fonts.googleapis.com/css?family=Lora|Lobster|Roboto|Dancing Script|Abril Fatface|&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lobster|Emblema One|Roboto|Josefin Sans|Dancing Script|&display=swap" rel="stylesheet">
 
-    </head>
     <style>
-
+        label{
+            text-align: left !important;
+        }
     </style>
+    </head>
     <body>
-     <div class="overlay"></div>
-     <div class="inbox container text-center justify-content-center mx-auto" style="z-index: 10;height: 22rem; width: 20rem; padding: 30px; display: none">
-        <div onclick="sec_hide('.inbox');" class="text-right mr-auto"><i class="fas fa-times cls_inbox"></i></div>
-        <div class="form inbox-message">
-            <h3><b style="font-family: Dancing Script; font-size: 1.5em">Send Message</b></h3><br>
-            <div class="success_msg"></div>
-            <div class="view_msg" style="display: none"><a>View Message</a></div>
-        </div>
-        <div class="message-container"></div>
-            <form class="form-group iform">
-                <label>
-                    <input type="text" class="itext form-control" placeholder="Your Message..."/>
-                </label>
-                <input type="file" class="form-control ifile form-control-file" style="width: 11rem"/><br><br>
-                <button class="btn btn-outline-primary sendbtn">Send</button>
+    <div class="overlay"></div>
+    <div class="container-fluid register_section text-center" style="position: absolute; display: none;  z-index: 4">
+        <div class="mx-auto" style="position: relative; width: 15rem;">
+            <div class="text-right mr-auto"><i onclick="sec_hide('.register_section');" class="fas fa-times cls_inbox"></i></div>
+            <h1>Register Here</h1><br>
+            <form class="register_form section" id="register_form"  action="{% url 'register' %}" enctype="multipart/form-data" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input id="username" required name="username" class="form-control text-center" placeholder="Username">
+                </div>
+                <div class="form-group" style="display: none">
+                    <input id="bot_detector" name="bot" class="form-control text-center">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" required name="email" class="form-control text-center" aria-describedby="emailHelp" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" required class="text-center form-control" id="password" placeholder="Password">
+                </div><br>
+                <button type="submit" class="reg_btn btn btn-primary mb-2">Submit</button>
             </form>
+        </div>
     </div>
-     <div class="container-fluid register_section text-center" style="position: absolute; display: none;  z-index: 10">
-                <div class="mx-auto" style="position: relative; width: 15rem;">
-                    <div class="text-right mr-auto"><i onclick="sec_hide('.register_section');" class="fas fa-times cls_inbox"></i></div>
-                    <h1>Register Here</h1><br>
-                     <form class="register_form section" id="register_form"  action="{% url 'register' %}" enctype="multipart/form-data" method="POST">
-                         {% csrf_token %}
-                         <div class="form-group">
-                             <input id="username" required name="username" class="form-control text-center" placeholder="Username">
-                         </div>
-                         <div class="form-group" style="display: none">
-                             <input id="bot_detector" name="bot" class="form-control text-center">
-                         </div>
-                         <div class="form-group">
-                             <input type="email" id="email" required name="email" class="form-control text-center" aria-describedby="emailHelp" placeholder="Email">
-                         </div>
-                         <div class="form-group">
-                             <input type="password" name="password" required class="text-center form-control" id="password" placeholder="Password">
-                         </div><br>
-                         <button type="submit" class="reg_btn btn btn-primary mb-2">Submit</button>
-                     </form>
-                </div>
-            </div>
-     <div class="container-fluid login_section text-center justify-content-center mx-auto" style="position: absolute; display: none; z-index: 10">
-                <div class="mx-auto" style="position: relative; width: 15rem;">
-                    <div class="text-right mr-auto"><i onclick="sec_hide('.login_section');" class="fas fa-times cls_inbox"></i></div>
-                    <div class="col-md">
-                    <h1>Login Here</h1><br>
-                     <form method="post" action="{% url 'login' %}" enctype="multipart/form-data" id="login_form" class="section">
-                         {% csrf_token %}
-                         <div class="form-group">
-                             <input type="email" name="email" required class="form-control text-center" placeholder="Email">
-                         </div>
-                         <div class="form-group">
-                             <input type="password" name="password" required class="text-center form-control" placeholder="Password">
-                         </div><br>
-                         <button type="submit" class="btn btn-primary mb-2">Submit</button>
-                     </form>
+    <div class="container-fluid login_section text-center justify-content-center mx-auto" style="position: absolute; display: none; z-index: 4;">
+        <div class="mx-auto" style="position: relative; width: 15rem;">
+            <div class="text-right mr-auto"><i onclick="sec_hide('.login_section');" class="fas fa-times cls_inbox"></i></div>
+            <div class="col-md">
+                <h1>Login Here</h1><br>
+                <form method="post" action="{% url 'login' %}" enctype="multipart/form-data" id="login_form" class="section">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="email" name="email" required class="form-control text-center" placeholder="Email">
                     </div>
-                </div>
+                    <div class="form-group">
+                        <input type="password" name="password" required class="text-center form-control" placeholder="Password">
+                    </div><br>
+                    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+                </form>
             </div>
-     <div class="container-fluid text-center justify-content-center mx-auto" style="padding: 20px;">
-          <section class="col-md-7 img-box">
-                <div class="animated img-box fc slider1 active"><img class="slider_img1" src="{% static 'img/slider_img1.png' %}" alt="Some Error Occured..."></div>
-                <div class="animated img-box fc slider2"><img class="slider_img1" src="{% static 'img/slider_img2.png' %}" alt="Some Error Occured..."></div>
-                <div class="animated img-box fc slider3"><img class="slider_img1" src="{% static 'img/slider_img3.png' %}" alt="Some Error Occured..."></div>
-          </section>
-            <div class="container-fluid" style="padding: 20px;">
-              <div class="col-sm title"><a href="{% url 'index' %}" class="navabr-brand"><h1 style="font-family: 'Emblema One'; font-size: 4rem;">WFH</h1></a></div>
-              <div class="row ml-auto tabs" style="width: 38rem; z-index: 10;">
-                  {% if user.is_authenticated %}
-                      <div class="col-sm inbox_btn" style="z-index: 3"><div class="nav-link"><a href="{% url 'inbox_view' %}">Inbox<hr></a></div></div>
-                      <div class="col-sm switch"><div class="nav-link"><a href="{% url 'seller' %}">Switch<hr></a></div></div>
-                      <div class="col-sm order"><div class="nav-link"><a href="{% url 'order_show' %}">Orders<hr></a></div></div>
-{#                      <div class="col-sm settings"><div class="nav-link"><a href="#">Settings<hr></a></div></div>#}
-{#                      <div class="col-sm post_rst"><div class="nav-link"><a href="{% url 'buyer_rst_create' %}">Post<hr></a></div></div>#}
-{#                      <div class="col-sm services"><div class="nav-link"><a href="{% url 'seller_services' %}">Services<hr></a></div></div>#}
-                      <div class="col-sm rst"><div class="nav-link"><a href="{% url 'buyer_rst_show' %}">Requests<hr></a></div></div>
-{#                      <div class="col-sm portfolio_tab"><div class="nav-link portfolio_btn"><a>Portfolio<hr></a></div></div>#}
-{#                      <div class="col-sm report"><div class="nav-link "><a href="#">Report<hr></a></div></div>#}
-                      <div class="col-sm logout"><div class="nav-link "><a href="{% url 'logout' %}">Logout<hr></a></div></div>
-                {% else %}
-                        <div class="col-sm register"><div class="nav-link"><a href="#">Register<hr></a></div></div>
-                        <div class="col-sm login"><div class="nav-link"><a href="#">Login<hr></a></div></div>
-                {% endif %}
-              </div>
-              </div>
+        </div>
+    </div>
+    <div class="container-fluid text-center justify-content-center mx-auto" style=" padding: 20px;">
+        <section class="col-md-7 img-box">
+            <div class="animated img-box fc slider1 active"><img class="slider_img1" src="{% static 'img/slider_img1.png' %}" alt="Some Error Occured..."></div>
+            <div class="animated img-box fc slider2"><img class="slider_img1" src="{% static 'img/slider_img2.png' %}" alt="Some Error Occured..."></div>
+            <div class="animated img-box fc slider3"><img class="slider_img1" src="{% static 'img/slider_img3.png' %}" alt="Some Error Occured..."></div>
+        </section>
+        <div class="mx-auto" style="padding: 20px;">
+            <div class="col-sm title"><a href="{% url 'index' %}" class="navabr-brand"><h1 style="font-family: 'Emblema One'; font-size: 4rem;">WFH</h1></a></div>
+            <div class="row ml-auto tabs" style="width: 38rem; z-index: 10;">
+                {% if user.is_authenticated %}
+                    <div class="col-sm inbox_btn" style="z-index: 3"><div class="nav-link"><a href="{% url 'inbox_view' %}">Inbox<hr></a></div></div>
+                    <div class="col-sm switch"><div class="nav-link"><a href="{% url 'seller_services' %}">Switch<hr></a></div></div>
+                    <div class="col-sm order"><div class="nav-link"><a href="{% url 'order_show' %}">Orders<hr></a></div></div>
+                    <div class="col-sm rst"><div class="nav-link"><a href="{% url 'buyer_rst_show' %}">Requests<hr></a></div></div>
+                    <div class="col-sm logout"><div class="nav-link "><a href="{% url 'logout' %}">Logout<hr></a></div></div>{% else %}
+                    <div class="col-sm register"><div class="nav-link"><a href="#">Register<hr></a></div></div>
+                    <div class="col-sm login"><div class="nav-link"><a href="#">Login<hr></a></div></div>{% endif %}
             </div>
-            <div class="container nvtxt text-wrap mx-auto justify-content-center">
-              <span class="nvtext__bg">WORK FROM HOME</span><br>
-              <p class="nvtext__small">With Us </p>
-            </div>
-{#        <a class="left" onclick="active_cell();"><svg class="bi bi-chevron-left" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">#}
-{#          <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 010 .708L5.707 8l5.647 5.646a.5.5 0 01-.708.708l-6-6a.5.5 0 010-.708l6-6a.5.5 0 01.708 0z" clip-rule="evenodd"/>#}
-{#        </svg></a>#}
-{#        <a class="right" onclick="active_cell();"><svg class="bi bi-chevron-right" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">#}
-{#          <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L10.293 8 4.646 2.354a.5.5 0 010-.708z" clip-rule="evenodd"/>#}
-{#        </svg></a>#}
-
-    <div class="container" style="z-index: 2 !important;">
-        <div class="row rw">
+        </div>
+        <div class="container-fluid mx-auto justify-content-center nvtxt">
+            <span class="nvtext__bg">WORK FROM HOME</span><br>
+            <p class="nvtext__small">With Us</p>
+        </div>
+    </div>
+    <div class="section container crd" style="margin-top: 20%"><hr>
+        <div class="row" style="padding: 20px">
             {% for s in srv %}
-                <div class="srv_card" style="width: 15rem; margin: 5px; padding: 12px; background: white; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);">
-                    <a href="{% url 'services_pk' s_pk=s.id %}">
-                        {% if s.pic_second %}
-                            <img class="card-img-top" alt="img2" src="{{ s.pic_second.url }}">
-                        {% else %}
-                            <img class="card-img-top" src='{% static 'img/logo.png' %}'/>
-                        {% endif %}
-                        <div class="card-body">
-                            <div class="card-title">{{ s.title }}</div>
-                            <div class="card-text">
-                                {% if s.pic_third and s.pic_first %}
-                                    <img class="imgs" alt="img1" src="{{ s.pic_first.url }}">
-                                    <img class="imgs" alt="img3" src="{{ s.pic_third.url }}">
-                                {% else %}
-                                    <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>&nbsp;
-                                    <img class="imgs text-center" src='{% static 'img/logo.png' %}'/>
-                                {% endif %}
+                <section class="cards col-md-3" style="padding: 5px">
+                    <article class="card card--1">
+                        <div class="card__info-hover">
+                            <svg class="card__like"  viewBox="0 0 24 24"><path fill="#000000" d="M12.1,18.55L12,18.65L11.89,18.55C7.14,14.24 4,11.39 4,8.5C4,6.5 5.5,5 7.5,5C9.04,5 10.54,6 11.07,7.36H12.93C13.46,6 14.96,5 16.5,5C18.5,5 20,6.5 20,8.5C20,11.39 16.86,14.24 12.1,18.55M16.5,3C14.76,3 13.09,3.81 12,5.08C10.91,3.81 9.24,3 7.5,3C4.42,3 2,5.41 2,8.5C2,12.27 5.4,15.36 10.55,20.03L12,21.35L13.45,20.03C18.6,15.36 22,12.27 22,8.5C22,5.41 19.58,3 16.5,3Z" /></svg>
+                            <div class="card__clock-info"><svg class="card__clock"  viewBox="0 0 24 24"><path d="M12,20A7,7 0 0,1 5,13A7,7 0 0,1 12,6A7,7 0 0,1 19,13A7,7 0 0,1 12,20M19.03,7.39L20.45,5.97C20,5.46 19.55,5 19.04,4.56L17.62,6C16.07,4.74 14.12,4 12,4A9,9 0 0,0 3,13A9,9 0 0,0 12,22C17,22 21,17.97 21,13C21,10.88 20.26,8.93 19.03,7.39M11,14H13V8H11M15,1H9V3H15V1Z" />
+                            </svg><span class="card__time">15 min</span>
                             </div>
                         </div>
-                    </a>
-                </div>
-    {% endfor %}
+                        <div class="card__img"></div><a href="{% url 'services_pk' s_pk=s.id %}" class="card_link"><div class="card__img--hover">
+                            {% if s.pic_third and s.pic_first %}
+                                <div><img style="z-index: 0 !important;" src="{{ s.pic_first.url }}" width="100%" height="100%"></div>
+                            {% else %}
+                                <div><img style="z-index: 0 !important;" src="{% static 'img/logo.png' %}" width="100%" height="100%"></div>
+                            {% endif %}
+                        </div></a>
+                        <div class="card__info">
+                            <span class="card__category" style="font-size: 1.2rem">$&nbsp;{{ s.pricing }}</span>
+                            <Div><h3 class="card__title">{{ s.title }}</h3></Div>
+                            <span class="card__by" style="font-size: 1.2rem">by <a href="#" class="card__author" title="author">{{ s.seller_id }}</a></span></div>
+                    </article>
+                </section>
+            {% endfor %}
         </div>
     </div>
-{% for s in service_pk %}
-    <div class="container row order_container">
-        <div class="f text-center">
-            <h1 style="display: none">{{ s.id }}</h1>
-            <h1>User:-{{ s.seller_id }}</h1>
-            <h1>{{ s.title }}</h1>
-            <h1>{{ s.tags }}</h1>
-            <h1>{{ s.category }}</h1>
-            <h1>$&nbsp;{{ s.pricing }}</h1>
-            {% if s.pic_first and s.pic_second and s.pic_third %}
-                <img class="imgs" src="{{ s.pic_first.url }}" alt=""/><br>
-                <img class="imgs" src="{{ s.pic_second.url }}" alt=""/><br>
-                <img class="imgs" src="{{ s.pic_third.url }}" alt=""/><br>
-            {% else %}
-                <img class="imgs" src="" alt="Not Available"/><br>
-                <img class="imgs" src="" alt="No Image"/><br>
-                <img class="imgs" src="" alt="No Image"/><br>
-            {% endif %}
-        </div>
-        <div class="container btn-sec text-center">
-            <a href="{% url 'index' %}"><u>Go Back</u></a><br>
-            {% if user.is_authenticated %}
-                <button type="button" class="purchase_btn btn btn-outline-primary">Purchase</button><br>
-                {% if user.username == s.seller_id %}
 
-                {% else %}
-                    <button type="button" class="btn btn-outline-primary contact-btn"><a>Contact</a></button><br>
-                {% endif %}
-                    <script>
-                        $('.contact-btn').on('click', function () {
-                            $.ajax({
-                                url: "{% url 'contact' people_id=s.seller_id %}",
-                                success: function (data) {
-                                    if (data === "Change"){
-                                        console.log("Change");
-                                        window.location.href = {% url 'inbox_view' %};
-                                    }
-                                    else{
-                                        $('.overlay').show();
-                                        $('.inbox').show();
-                                        $('.i_id').append(data);
-                                        $('.user_id').append('{{ s.seller_id }}');
-                                        $('.sendbtn').on('click', function (e) {
-                                            e.preventDefault();
-                                            $.ajax({
-                                                url: "{% url 'inbox_view' %}",
-                                                type: 'POST',
-                                                enctype: "multipart/form-data",
-                                                data: {
-                                                    text: $('.itext').val(),
-                                                    file: $('.ifile').val(),
-                                                    i_id: data,
-                                                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-                                                },
-                                                success: function (data) {
-                                                    hide('.iform');
-                                                    hide('.user_id');
-                                                    hide('.inbox_id');
-                                                    show('.view_msg');
-                                                    $('.success_msg').append(data);
-                                                }
-                                            });
-                                        });
-                                    }
-                                }
-                            });
-                        });
-                    </script>
-            {% endif %}
-        </div>
-    </div>
-    <br><br>
-        <div id="purchase_services" class="container text-center">
-            <div class="close"><i class="fas fa-times"></i></div>
-            <div class="text-center">
-                <h1 class="text-center">Pay&nbsp;${{ s.pricing }}</h1>
-                <div class="card-body">
-                    <div class="card-title"><b>{{ s.title }}</b></div>
-                    <div id="paypal-button-container"></div>
-                </div>
-            </div>
-        </div>
-        <div class="requirement_submit container text-center">
-            <div class="text-center">
-                    <b><h2>Submit Your Requirements</h2><br></b>
-                    <form method="post" class="form" enctype="multipart/form-data" action="{% url 'purchase_services' srv_pk=s.id %}">
-                        {% csrf_token %}
-                        <div class="text-center">
-                            <textarea style="padding: 15px" required type="text" name="text" class="form-contorl-lg form-control" placeholder="Your Requirements..."></textarea>
-                        </div><br>
-                        <div class="text-center">
-                            <input type="file" required class="form-control-file" name="image">
-                        </div><br>
-                        <button type="submit" class="btn btn-outline-success">Continue</button>
-                    </form>
-            </div>
-        </div>
-    <script src="https://www.paypal.com/sdk/js?client-id=ATV8ChoBtwpSV3OMHinaxwCN0GMk6PL_Ql5RBaPzRwmtxBRnqzPIwwNOa7YdWXOC3nKY524zGXbga_-K"> // Required. Replace SB_CLIENT_ID with your sandbox client ID.
-  </script>
-    <script>
-    paypal.Buttons({
-        createOrder: function(data, actions) {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                value: '{{s.pricing}}.00'
-              }
-            }]
-          });
-        },
-        onApprove: function(data, actions) {
-      return actions.order.capture().then(function(details) {
-        alert('Transaction completed !!!');
-          inout('#purchase_services');
-          inout('.requirement_submit');
-          outin('.requirement_submit');
-          hide('.overlay');
-      });
-    }
-    }).render('#paypal-button-container');
-  </script>
-    <script>
-    $('.context_btn').hide();
-        $('.purchase_btn').click(function () {
-            hide('.overlay');
-            inout('#purchase_services');
-            outin('#purchase_services');
-            show('.overlay');
-        });
-        $('.close').click(function () {
-            inout('#purchase_services');
-            hide('.overlay');
-        });
-        $('.require_btn').click(function () {
-            hide('.overlay');
-            inout('#purchase_services');
-            inout('.require_submit');
-            outin('.require_submit');
-            show('.overlay');});
-        $('.sidenav').hide();
-    </script>
-        {% endfor %}
+
     </body>
     <script>
     function outin(e){
@@ -347,10 +177,9 @@
         outin('#portfolio_form');
     });
     $(document).ready(function(){
-          setInterval(() => {
-            active_cell();
-            console.log('chnage');
-          }, 3000);
+          {#setInterval(() => {#}
+          {#  active_cell();#}
+          {#  console.log('chnage');},3000);#}
       });
       function active_cell(){
           var cell1 = $('.fc').eq(0).hasClass('active');
@@ -382,7 +211,3 @@
       }
     </script>
 </html>
-
-
-
-

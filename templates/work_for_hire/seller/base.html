@@ -5,33 +5,29 @@
           Work From Home
         </title>
         <meta charset="UTF-8">
-        <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
         <link rel="stylesheet" href="{% static 'stylesheet/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'stylesheet/animate.css' %}">
-
         <link href="{% static 'stylesheet/jquery-countryselector.min.css' %}" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Emblema+One&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;0,500;1,200;1,700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
-        <link href="https://fonts.googleapis.com/css?family=Lora|Lobster|Roboto|Dancing Script|Abril Fatface|&display=swap" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Lora|Lobster|Bungee Inline|Emblema One|Josefin Sans|Roboto|Dancing Script|Abril Fatface|&display=swap" rel="stylesheet">
         <style>
-        .overlay{
+        div.overlay{
+            z-index: 3;
             display: none;
-            position: absolute;
+            position: fixed;
             width: 100%;
-            height: 200vh;
+            height: 100%;
             box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);
             border-radius: 5px;
             background-color: rgba(255, 255, 255, .15);
-            backdrop-filter: blur(10px);
-            z-index: 8;
+            backdrop-filter: blur(8px);
             color: #fff;
-            {#background: linear-gradient(#00ff64,#69ffaa,#fff);#}
         }
             body{
-                height: 200vh;
+                position: relative;
+                height: auto;
                 background-position: center;
                 background-size: cover;
                 background-image: linear-gradient(0.40turn, rgb(0, 255, 128), rgba(0, 255, 157, 0.596), rgba(0, 255, 157, 0.37), #ffffff);
@@ -51,7 +47,10 @@
             height: 50px;
         }
             {% if user.is_authenticated %}
-            @media(max-width: 500px){
+            @media(max-width: 768px){
+                .message_con{
+                    margin-top: 10% !important;
+                }
               .tabs{
                   display: none;
                 visibility: hidden;
@@ -61,8 +60,6 @@
             }
             }
             {% endif %}
-            @media(max-width: 380px) {
-            }
             a{
               text-decoration: none;
               color: black;
@@ -102,15 +99,13 @@
         <div class="col-md-12 text-center justify-content-center mx-auto"><a href="{% url 'index' %}" class="navbar-brand"><h1 style="font-family: 'Emblema One'; font-size: 4rem;">WFH</h1></a></div><hr class="title_hr">
               <div class="row text-center justify-content-center mx-auto tabs" style="z-index: 10;">
                   {% if user.is_authenticated %}
-                      <div class="col-sm home" style="z-index: 3"><div class="nav-link"><a href="{% url 'index' %}">Home<hr></a></div></div>
+                      <div class="col-sm home"><div class="nav-link"><a href="{% url 'index' %}">Home<hr></a></div></div>
                       <div class="col-sm inbox_btn"><div class="nav-link"><a href="{% url 'inbox_view' %}">Inbox<hr></a></div></div>
-{#                      <div class="col-sm switch"><div class="nav-link"><a href="{% url 'seller' %}">Switch<hr></a></div></div>#}
                       <div class="col-sm order"><div class="nav-link"><a href="{% url 'order_show' %}">Orders<hr></a></div></div>
                       <div class="col-sm post_rst"><div class="nav-link"><a href="{% url 'buyer_rst_create' %}">Post<hr></a></div></div>
                       <div class="col-sm services"><div class="nav-link"><a href="{% url 'seller_services' %}">Services<hr></a></div></div>
                       <div class="col-sm rst"><div class="nav-link"><a href="{% url 'buyer_rst_show' %}">Requests<hr></a></div></div>
-{#                      <div class="col-sm portfolio_tab"><div class="nav-link portfolio_btn"><a>Portfolio<hr></a></div></div>#}
-                      <div class="col-sm settings"><div class="nav-link"><a href="#">Settings<hr></a></div></div>
+                      <div class="col-sm settings"><div class="nav-link"><a href="{% url 'settings_view' %}">Settings<hr></a></div></div>
                       <div class="col-sm report"><div class="nav-link "><a href="#">Report<hr></a></div></div>
                       <div class="col-sm logout"><div class="nav-link "><a href="{% url 'logout' %}">Logout<hr></a></div></div>
                 {% else %}
@@ -118,41 +113,6 @@
                         <div class="col-sm-2 login"><div class="nav-link"><a href="#">Login<hr></a></div></div>
                 {% endif %}
               </div>
-             {% if user.is_authenticated %}
-                 <div class="container text-center justify-content-center mx-auto" id="portfolio_form" style="position: relative; display: none; z-index: 10; font-family: Lobster;">
-                     <div class="text-right mr-auto"><i onclick="sec_hide('#portfolio_form');" class="fas fa-times cls_inbox"></i></div>
-                     <h1 style="font-size: 3rem"><u>Portfolio Verification Form</u></h1><br>
-                    <div class="col-md-4 mx-auto text-left justify-content-center">
-                        <form method="POST" class="form" action="{% url 'portfolio' up_id=user.username %}" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                    <label for="pimg">Picture :</label><br>
-                                    <input type="file" id="pimg" class="picture_uploader form-control form-control-file" name="picture">
-                            </div>
-                            <div class="form-group">
-                                    <label for="pskills">Skills :</label>
-                                    <input type="text" name="skills" id="pskills" required class="form-control" placeholder="Type Your Skills Use Comma">
-                            </div>
-                            <div class="form-group">
-                                    <label for="pcountry">Country :</label>
-                                    <select name="country" id="pcountry" required class="form-control" data-role="country-selector">
-                                    </select>
-                            </div>
-                            <div class="form-group">
-                                    <label for="pdegree">Degree :</label>
-                                    <input type="text" id="pdegree" name="degree" class="form-control" placeholder="Degree">
-                            </div>
-                            <div class="form-group">
-                                    <label for="pcertify">Certification :</label>
-                                    <input type="text" id="pcertify" name="certify" class="form-control" placeholder="Certification Courses Use Comma">
-                            </div>
-                            <div class="form-group text-center">
-                                <button type="submit" style="color: white" class="btn btn-dark mb-2">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                 </div>
-        {% endif %}
      <div class="container-fluid register_section text-center" style="position: absolute; display: none;  z-index: 10">
                 <div class="text-center justify-content-center mx-auto" style="position: relative; width: 15rem; ">
                     <div class="text-right mr-auto"><i onclick="sec_hide('.register_section');" class="fas fa-times cls_inbox"></i></div>
@@ -198,8 +158,6 @@
     </div>
 
     </body>
-    <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
-    <script src="{% static 'js/jquery.countrySelector.js' %}"></script>
     <script>
     function outin(e){
         $(e).removeClass('animated fadeOutLeft');
@@ -245,11 +203,7 @@
         $('.srv_card').remove();
         outin('.login_section');
     });
-     $('.portfolio_btn').click(function () {
-         inout('.overlay');
-         outin('.overlay');
-        outin('#portfolio_form');
-    });
+
     </script>
     {% block navbar %}
     {% endblock %}

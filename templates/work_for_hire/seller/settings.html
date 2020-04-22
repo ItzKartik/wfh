@@ -1,38 +1,172 @@
 {% extends 'work_for_hire/seller/base.html' %}
 {% block navbar %}
-     {% if user.is_authenticated %}
-            <div class="container-fluid text-center justify-content-center mx-auto" id="portfolio_form" style="position: absolute;  display: none; margin: 40px; font-family:  Lobster;  z-index: 10">
-                <div class="text-center justify-content-center mx-auto">
-                    <div class="text-right mr-auto"><i onclick="sec_hide('#portfolio_form');" class="fas fa-times cls_inbox"></i></div>
-                    <h1 style="font-size: 3rem"><u>Portfolio Verification Form</u></h1><br>
-                        <form method="POST" style="position: relative; width: 18rem" class="text-left justify-content-left mx-auto" action="{% url 'portfolio' up_id=user.username %}" enctype="multipart/form-data">
+    <style>
+        .image-upload>input {
+            display: none;
+        }
+        .box{
+            text-align: center;
+            top: 0;
+            left: 0;
+        }
+        .stack-top{
+            text-align: center;
+            position: absolute;
+            z-index: 3;
+            cursor: pointer;
+        }
+        input[type='file']#pimg
+        {
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            font-size: 50px;
+            cursor: pointer;
+            opacity: 0;
+            -moz-opacity: 0;
+            filter: Alpha(Opacity=0);
+        }
+    label{
+        text-align: center !important;
+    }
+    </style>
+         {% if p %}
+            <div class="col-md-12 text-center justify-content-center mx-auto" id="portfolio_form" style="margin: 40px; font-family:  Lobster;">
+
+                    <form method="POST" action="{% url 'portfolio' up_id=user.username %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label for="pimg">Picture :</label>
-                            <input type="file" id="pimg" class="picture_uploader" name="picture">
-                        </div>
-                        <div class="form-group">
-                            <label for="pskills">Skills :</label>
-                            <input type="text" name="skills" id="pskills" required class="form-control" placeholder="Type Your Skills Use Comma">
-                        </div>
-                        <div class="form-group">
-                            <label for="pcountry">Country :</label>
-                            <select name="country" id="pcountry" required class="form-control" data-role="country-selector">
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="pdegree">Degree :</label>
-                            <input type="text" id="pdegree" name="degree" class="form-control" placeholder="Degree">
-                        </div>
-                        <div class="form-group">
-                            <label for="pcertify">Certification :</label>
-                            <input type="text" id="pcertify" name="certify" class="form-control" placeholder="Certification Courses Use Comma">
-                        </div>
+{#                            <div class="col-md-12">#}
+{#                                {% if p.picture != 'False' %}#}
+{#                                        <div class="col-md-6" style="width: 155px; height: 155px;">#}
+{#                                            <img alt="" class='dp_img img-responsive rounded-circle z-depth-2' width="100%" height="100%" src="{{ p.picture.url }}"/>#}
+{#                                        </div>#}
+{#                                        <div class="col-md-6">#}
+{#                                            <i style="font-size: 2em" class="fas fa-edit"></i>#}
+{#                                            <input type="file" accept="image/*" id="pimg" class="form-control form-control-file picture_uploader" name="picture"/>#}
+{#                                        </div>#}
+{#                                {% else %}#}
+{#                                    <div class="box" style="width: 150px; height: 150px; padding: 30px">#}
+{#                                        <i style="font-size: 8em" class="fas fa-user-circle"></i>#}
+{#                                        <input type="file" accept="image/*" id="pimg" class="form-control form-control-file picture_uploader" name="picture">#}
+{#                                    </div>#}
+{#                                {% endif %}#}
+{#                            </div><br>#}
+                            <div class="text-center row">
+                                <div class="col-md-12 mx-auto " style="width: 155px; height: 155px;">
+                                    {% if p.picture != 'False' %}
+                                        <img alt="" class='dp_img img-responsive rounded-circle z-depth-2' width="155px" height="155px" src="{{ p.picture.url }}"/>
+                                    {% else %}
+                                        <i style="font-size: 8em" class="fas fa-user-circle"></i>
+                                    {% endif %}
+                                </div><br>
+                                    <input type="file" accept="image/*" id="pimg" class="form-control form-control-file picture_uploader" name="picture"/>
+                            </div><br><br>
+                            <div class="text-center row skills_form">
+                                <h4 class="col-md-6">{{ p.skills }}</h4>
+                                <i onclick="hideit('.skills_form', '.skills_field')" style="font-size: 1.5rem" class="fa fa-edit col-md-6"></i>
+                            </div>
+                            <div class="form-group skills_field" style="display: none">
+                                <label for="pskills">Skills :</label>
+                                <input type="text" name="skills" value="{{ p.skills }}" id="pskills" required class="form-control" placeholder="Type Your Skills Use Comma">
+                            </div><br>
+
+                            <div class="text-center row country_form">
+                                <h4 class="col-md-6">{{ p.country }}</h4>
+                                <i onclick="hideit('.country_form', '.country_field')" style="font-size: 1.5rem" class="fa fa-edit col-md-6"></i>
+                            </div>
+                            <div class="form-group country_field" style="display: none">
+                                <label for="pcountry">Country :</label>
+                                <select name="country" id="pcountry" required class="form-control" data-role="country-selector">
+                                </select>
+                            </div><br>
+
+                            <div class="text-center row degree_form">
+                                <h4 class="col-md-6">{{ p.degree }}</h4>
+                                <i onclick="hideit('.degree_form', '.degree_field')" style="font-size: 1.5rem" class="fa fa-edit col-md-6"></i>
+                            </div>
+                            <div class="form-group degree_field" style="display: none">
+                                <label for="pdegree">Degree :</label>
+                                <input type="text" id="pdegree" value="{{ p.degree }}" name="degree" class="form-control" placeholder="Degree">
+                            </div><br>
+
+                            <div class="text-center row certify_form">
+                                <h4 class="col-md-6">{{ p.certification }}</h4><br>
+                                <i onclick="hideit('.certify_form', '.certify_field')" style="font-size: 1.5rem" class="fa fa-edit col-md-6"></i>
+                            </div>
+                            <div class="form-group certify_field" style="display: none">
+                                <label for="pcertify">Certification :</label>
+                                <input type="text" id="pcertify" name="certify" value="{{ p.certification }}" class="form-control" placeholder="Certification Courses Use Comma">
+                            </div><br>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+         {% else %}
+             <div class="container mx-auto text-center">
+                 <h1>Create Your Portfolio To Get Started</h1>
+                 <abbr title="Create Your Portfolio Now..."><button class="portfolio_btn btn btn-warning">Create</button></abbr>
+             </div><br>
+            <div class="col-md-12 text-center justify-content-center mx-auto" id="portfolio_form" style="display: none; top: 10px; position: absolute; z-index: 4; margin: 40px; font-family:  Lobster;">
+            <div class="text-right mr-auto"><i onclick="sec_hide('#portfolio_form');" class="fas fa-times cls_inbox"></i></div>
+                <div class="col-md-6 text-center justify-content-center mx-auto">
+                    <form method="POST" class="mx-auto" action="{% url 'portfolio' up_id=user.username %}" enctype="multipart/form-data" style="border: 2px solid black; padding: 40px; border-radius: 20px">
+                        {% csrf_token %}
+                        <div class="image-upload container">
+                            <label>Select A Picture</label>
+                                    <div class="mx-auto">
+                                        <i style="font-size: 8rem" class='fas fa-user-circle'></i>
+                                        <input type="file" accept="image/*" id="pimg" class="form-control form-control-file picture_uploader" name="picture"/>
+                                    </Div>
+                        </div><br>
+                            <div class="form-group skills_field">
+                                <label for="pskills">Skills :</label>
+                                <input type="text" name="skills" id="pskills" required class="form-control" placeholder="Type Your Skills Use Comma">
+                            </div>
+                            <div class="form-group country_field">
+                                <label for="pcountry">Country :</label>
+                                <select name="country" id="pcountry" required class="form-control" data-role="country-selector">
+                                </select>
+                            </div>
+                            <div class="form-group degree_field">
+                                <label for="pdegree">Degree :</label>
+                                <input type="text" id="pdegree" name="degree" class="form-control" placeholder="Degree">
+                            </div>
+                            <div class="form-group certify_field">
+                                <label for="pcertify">Certification :</label>
+                                <input type="text" id="pcertify" name="certify" class="form-control" placeholder="Certification Courses Use Comma">
+                            </div><br>
                             <div class="form-group text-center">
-                                <button type="submit" style="color: white" class="btn btn-dark mb-2">Submit</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
                     </form>
                 </div>
             </div>
         {% endif %}
+    <script>
+    $('.portfolio_btn').click(function () {
+         outin('.overlay');
+         outin('#portfolio_form');
+    });
+    $('#pcountry').append('<option selected>{{ p.country }}</option>');
+    function hideit(hd, sh) {
+        hide(hd);
+        show(sh);
+    }
+    let box = $('.box');
+        box.mouseover(function () {
+           show('.cn');
+           $('.cin').css({'opacity':'0.5'});
+        });
+        box.mouseout(function () {
+           hide('.cn');
+           $('.cin').css({'opacity':'1'});
+        });
+    </script>
 {% endblock %}

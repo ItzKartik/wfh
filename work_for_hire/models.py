@@ -50,6 +50,7 @@ class p_service(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     seller_id = models.CharField(max_length=100)
     title = models.CharField(max_length=100, blank=True)
+    delivery_time = models.IntegerField(blank=True, null=True)
     category = models.CharField(max_length=100, blank=True)
     tags = models.CharField(max_length=100, blank=True)
     pricing = models.IntegerField(blank=True, null=True)

@@ -13,8 +13,11 @@ from django.utils import timezone
 from tzlocal import get_localzone
 import smtplib
 import socket
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 
+@login_required(login_url='index')
 def create_inbox_members(request, people_id):
     u = request.user.username
     try:
@@ -27,16 +30,35 @@ def create_inbox_members(request, people_id):
             user_id=u
         )
         i_m.save()
-        subject = "Prince"
-        text = "Hello User"
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "WFH - You Got A Message"
+        html = """
+        <html>
+          <head></head>
+          <body>
+            <p>Go Check Your Inbox Now... To Keep your Response Rate Good To Clients</p>
+          </body>
+        </html>
+        """
+        part2 = MIMEText(html, 'html')
+        msg.attach(part2)
         smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         smtp_server.login("guptapz111@gmail.com", "localhost@111")
-        message = "Subject: {}\n\n{}".format(subject, text)
-        smtp_server.sendmail("noreply@gmail.com", "gtinku935@gmail.com", message)
+        smtp_server.sendmail("noreply@gmail.com", "pgxxx55@gmail.com", msg.as_string())
         smtp_server.close()
         return HttpResponse(i_m.inbox_id)
 
 
+def settings_page(request):
+    user = request.user.username
+    try:
+        p = port_folio.objects.get(user_id=user)
+        return render(request, 'work_for_hire/seller/settings.html', {'p': p})
+    except EOFError:
+        return render(request, 'work_for_hire/seller/settings.html')
+
+
+@login_required(login_url='index')
 def message_view(request):
     if request.method == "POST":
         inb = request.POST['inb']
@@ -45,12 +67,13 @@ def message_view(request):
         return HttpResponse(msg)
 
 
+@login_required(login_url='index')
 def inbox_view(request):
     user = request.user.username
     if request.method == 'POST':
         inbox_id = request.POST['i_id']
-        text = request.POST['itext']
-        file = request.FILES.get('ifiles', False)
+        text = request.POST['i_text']
+        file = request.FILES.get('i_file', False)
         d = direct_message.objects.create(
                 inbox_id=inbox_id,
                 user=user,
@@ -59,31 +82,37 @@ def inbox_view(request):
                 datetime=timezone.now()
         )
         d.save()
-        # return redirect('inbox_view')
-        return HttpResponse("Message Sent !!!   ")
+        context = {
+            'text': text,
+            'file': d.attachments,
+            'messanger': user
+        }
+        msg = json.dumps(context, indent=4, sort_keys=True, default=str)
+        return HttpResponse(msg, content_type='application/json')
+        # return HttpResponse("Message Sent !!!")
     else:
         p = inbox_members.objects.filter(people_id=user)
         u = inbox_members.objects.filter(user_id=user)
-        if p:
-            for inb in p:
-                msg = direct_message.objects.filter(inbox_id=inb.inbox_id)
+        if p or u:
+            if p and u:
                 obj = {
                     'people_id': p,
-                    # 'msg': msg
+                    'user_id': u
                 }
-                return render(request, 'work_for_hire/inbox.html', obj)
-        elif u:
-            for inb in u:
-                msg = direct_message.objects.filter(inbox_id=inb.inbox_id)
+            elif p:
                 obj = {
-                    'user_id': u,
-                    'msg': msg
+                    'people_id': p
                 }
-                return render(request, 'work_for_hire/inbox.html', obj)
+            else:
+                obj = {
+                    'user_id': u
+                }
+            return render(request, 'work_for_hire/inbox.html', obj)
         else:
             return render(request, 'work_for_hire/inbox.html')
 
 
+@login_required(login_url='index')
 def buyer_rst_show(request):
     user = request.user.username
     p_model = p_service.objects.filter(seller_id=user)
@@ -98,6 +127,7 @@ def buyer_rst_show(request):
     return render(request, 'work_for_hire/seller/requests_show.html', all_obj)
 
 
+@login_required(login_url='index')
 def buyer_request_create(request):
     if request.method == 'POST':
         user = request.user.username
@@ -131,6 +161,7 @@ def buyer_request_create(request):
             return render(request, 'work_for_hire/seller/requests.html', obj)
 
 
+@login_required(login_url='index')
 def chatting(request, order_id):
     user = request.user.username
     if request.method == 'POST':
@@ -146,35 +177,48 @@ def chatting(request, order_id):
         return render(request, 'work_for_hire/seller/order.html')
 
 
+@login_required(login_url='index')
 def order_show(request):
     user = request.user.username
-    o = orders.objects.all()
-    for o in o:
-        print(o.seller)
-        slr_orders = orders.objects.filter(seller=user)
-        bur_orders = orders.objects.filter(buyer=user)
-        if slr_orders or bur_orders:
+    slr_orders = orders.objects.filter(seller=user)
+    bur_orders = orders.objects.filter(buyer=user)
+    if slr_orders or bur_orders:
+        if slr_orders and bur_orders:
+            print('both' + user)
             obj = {
-                'o': slr_orders,
+                's': slr_orders,
                 'b': bur_orders
             }
-            return render(request, 'work_for_hire/seller/order.html', obj)
+        elif bur_orders:
+            print('bur' + user)
+            obj = {
+                'b': bur_orders
+            }
         else:
-            return render(request, 'work_for_hire/seller/order.html')
+            print('slr' + user)
+            obj = {
+                'o': slr_orders
+            }
+        return render(request, 'work_for_hire/seller/order.html', obj)
+    else:
+        return render(request, 'work_for_hire/seller/order.html')
 
 
+@login_required(login_url='index')
 def delete_services(request, su_pk):
     s = p_service.objects.filter(id=su_pk)
     s.delete()
-    return redirect('seller')
+    return redirect('seller_services')
 
 
+@login_required(login_url='index')
 def seller_services(request):
     u_id = request.user
     s = p_service.objects.filter(seller_id=u_id)
     return render(request, 'work_for_hire/seller/seller.html', {'s': s})
 
 
+@login_required(login_url='index')
 def deliver_success(request, o_pk):
     o = orders.objects.get(id=o_pk)
     o.delivery = 1
@@ -183,6 +227,7 @@ def deliver_success(request, o_pk):
     return render(request, 'work_for_hire/seller/order.html', {'o_details': o})
 
 
+@login_required(login_url='index')
 def order_services(request, srv_pk):
     if request.method == 'POST':
         user = request.user.username
@@ -225,23 +270,15 @@ def order_services(request, srv_pk):
             return render(request, 'work_for_hire/seller/order.html', obj)
 
 
-def fetch_all(request, mdl):
-    srv = mdl.objects.all()
-    return render(request, 'work_for_hire/index.html', {'srv': srv})
-
-
-def all_services(request):
-    return fetch_all(request, mdl=p_service)
-
-
 def services_pk(request, s_pk):
     if request.method == 'GET':
         service_pk = p_service.objects.filter(id=s_pk)
-        return render(request, 'work_for_hire/index.html', {'service_pk': service_pk})
+        return render(request, 'work_for_hire/gig_view.html', {'service_pk': service_pk})
     else:
         return HttpResponse('PK Does not matched !')
 
 
+@login_required(login_url='index')
 def portfolio_show(request, u_id):
     if request.method == 'GET':
         pt = port_folio.objects.filter(user_id=u_id)
@@ -251,6 +288,7 @@ def portfolio_show(request, u_id):
         return HttpResponse('Do not have a portfolio')
 
 
+@login_required(login_url='index')
 def services_show(request, u_id):
     if request.method == 'GET':
         s = p_service.objects.filter(seller_id=u_id)
@@ -261,8 +299,8 @@ def services_show(request, u_id):
 
 
 def index(request):
-    # return render(request, 'work_for_hire/seller/base.html')
-    return fetch_all(request, p_service)
+    srv = p_service.objects.all()
+    return render(request, 'work_for_hire/index.html', {'srv': srv})
 
 
 def seller(request):
@@ -304,11 +342,12 @@ def logout_view(request):
     return redirect('index')
 
 
+@login_required(login_url='index')
 def portfolio(request, up_id):
     if request.method == 'POST':
         p = port_folio.objects.filter(user_id=up_id)
         if p:
-            picture = request.FILES['picture']
+            picture = request.FILES.get('picture', False)
             skills = request.POST['skills']
             country = request.POST['country']
             degree = request.POST['degree']
@@ -320,7 +359,7 @@ def portfolio(request, up_id):
             p.degree = degree
             p.certification = certify
             p.save()
-            return redirect('seller_services')
+            return redirect('settings_view')
         else:
             picture = request.FILES['picture']
             skills = request.POST['skills']
@@ -334,6 +373,7 @@ def portfolio(request, up_id):
         return redirect('seller')
 
 
+@login_required(login_url='index')
 def create_s(request, pk_create):
     if request.method == 'POST':
         p_pk = request.POST['pk']
@@ -342,6 +382,7 @@ def create_s(request, pk_create):
         p_three = request.FILES['p_three']
         title = request.POST['title']
         t = "I will do " + title
+        d_time = request.POST['d_time']
         category = request.POST['category']
         tags = request.POST['tags']
         pricing = request.POST['pricing']
@@ -352,23 +393,16 @@ def create_s(request, pk_create):
         p.pic_second = p_two
         p.pic_third = p_three
         p.title = t
+        p.delivery_time = d_time
         p.category = category
         p.tags = tags
         p.pricing = pricing
         p.published_date = publish
         p.description = description
         p.save()
-        return redirect('seller')
+        return HttpResponse('Done')
     else:
         p = p_service.objects.create(seller_id=pk_create)
         p.save()
         port = p.pk
-        return render(request, 'work_for_hire/seller/services_form.html', {'port': port})
-
-
-def update_services(request, su_pk):
-    if request.method == 'POST':
-        pass
-    else:
-        s = p_service.objects.get(id=su_pk)
-        return render(request, 'work_for_hire/seller/services_form.html', {'s': s})
+        return HttpResponse(port)

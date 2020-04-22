@@ -63,8 +63,8 @@
      </div>
         <div class="container text-center" style="background: white; padding: 40px; border-radius: 10px">
             <div class="text-center"><button id="post_form_open" class="btn btn-outline-primary">Post A Request</button></div><br><br>
-            <h1>Your Posted Request</h1><br><br>
             {% if b %}
+                <h1>Your Posted Request</h1><br><br>
                 {% for r in b %}
                     <a>{{ r.rst }}</a>&nbsp;<br>
                     {% if tm %}
