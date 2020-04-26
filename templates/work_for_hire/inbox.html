@@ -2,24 +2,25 @@
     {% load static %}
 {% block navbar %}
 <style>
-.form-control-file::-webkit-file-upload-button{
+.picture_uploader::-webkit-file-upload-button{
             visibility: hidden;
-}
-.form-control-file{
-    width: 14rem;
-    text-align: center;
-    display: inline-block;
-    border: 1px solid #000;
-    border-radius: 40px;
-    padding: 5px 5px;
-    outline: none;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    cursor: pointer;
-    text-shadow: 1px 1px #fff;
-    font-weight: 700;
-    font-size: 1em;
-}
+        }
+        .picture_uploader{
+            content: 'Select Your Profile Picture';
+            text-align: center;
+            width: 18rem;
+            display: inline-block;
+            background: #fff;
+            border-radius: 40px;
+            padding: 5px 5px;
+            outline: none;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            cursor: pointer;
+            text-shadow: 1px 1px #fff;
+            font-weight: 700;
+            font-size: 1em;
+        }
 
 a{
     cursor: pointer;
@@ -37,12 +38,6 @@ a{
                 <div class="container text-center mx-auto justify-content-center" style="">
                         {% for us in people_id %}
                             <a onclick="fetchmymsg('{{ us.inbox_id }}');" style="font-size: 1em" class="people_id">{{ us.user_id }}</a><br><hr>
-                            <script>
-                                $(document).ready(function (e) {
-                                    e.preventDefault();
-                                    fetchmymsg('{{ us.inbox_id }}');
-                                });
-                            </script>
                         {% endfor %}
                         {% for us in user_id %}
                             <a onclick="fetchmymsg('{{ us.inbox_id }}');" style="font-size: 1em" class="people_id">{{ us.people_id }}</a><br><hr>
@@ -64,16 +59,21 @@ a{
                 </div>
                 <div class="msg_form text-center mx-auto justify-content-center">
                     <h1 class="no_msg">No Messages Yet !!!</h1>
+
+
                     <form class="iform mx-auto" enctype="multipart/form-data" method="post">
                         {% csrf_token %}
                             <input type="text" name="i_text" class="form-control" id="msg_txt"/><br>
-                            <input type="file" style="width: auto" name="i_file" class="form-control form-control-file picture_uploader" id="msg_file"/><br><br>
+                            <input type="file" name="i_file" class="form-control form-control-file picture_uploader" id="msg_file"/><br><br>
                         <button id="send_msg" class="btn btn-outline-primary">Send</button>
                     </form>
                 </div>
             </div>
         </div>
     </div><br><br>
+    <button onClick="sendMsg();">Hit Me</button>
+
+    <script src="{% static 'js/ws.js' %}"></script>
     <script>
         $(document).ready(function () {
            if($('.message-container').empty()){
@@ -149,36 +149,16 @@ a{
                             success: function (data) {
                                 $('#msg_txt').val('');
                                 $('#msg_file').val('');
-                                if (data['file'] !== 'False') {
-                                    $('.message-container').append("<div class='contact_id'>" + data['messanger'] + "</div><br><img class='msg_attach' src=" + '/media/' + data['file'] +" alt=''><div class='msg_text'>" + data['text'] + "</div><hr>");
+                                console.log(data['file']);
+                                if ((data['file'] !== false) && (data["file"] !== '')) {
+                                    $('.message-container').append("<div class='contact_id'>" + data['messanger'] + "</div><br><div class='msg_text'>" + data['text'] + "</div><br><img class='msg_attach' src=" + '/media/' + data['file'] +" alt=''><hr>");
+                                }
+                                else{
+                                    $('.message-container').append("<div class='contact_id'>" + data['messanger'] + "</div><div class='msg_text'>" + data['text'] + "</div><hr>");
                                 }
                             }
                         });
                     });
-                    {#$(document).ready(function(){#}
-                    {#    $.ajax({#}
-                    {#        url: "{% url 'message_view' %}",#}
-                    {#        type: "POST",#}
-                    {#        enctype: "multipart/form-data",#}
-                    {#        data:{#}
-                    {#            inb: $('.i_id').val(),#}
-                    {#            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()#}
-                    {#        },#}
-                    {#        success: function (data) {#}
-                    {#            let d = JSON.parse(data);#}
-                    {#            let i = 0;#}
-                    {#            while(i < d.length){#}
-                    {#                    if((d[i]["fields"]["attachments"] !== 'False') && (d[i]["fields"]["attachments"] !== '')) {#}
-                    {#                        $('.message-container').append("<div class='contact_id'>" + d[i]['fields']['user'] + "</div><br><div class='msg_text'>" + d[i]['fields']['text'] + "</div><br>"#}
-                    {#                            + "<img class='msg_attach' src=" + '/media/' + d[i]["fields"]["attachments"] + " alt=''><hr>");#}
-                    {#                    }#}
-                    {#                    else{#}
-                    {#                        $('.message-container').append("<div class='contact_id'>" + d[i]['fields']['user'] + "</div><br><div class='msg_text'>" + d[i]['fields']['text'] + "</div><hr>");#}
-                    {#                    }#}
-                    {#                    i = i+1#}
-                    {#                }#}
-                    {#            }#}
-                    {#        });});#}
                     </script>
 {% endblock %}
 

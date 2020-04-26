@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'work_for_hire.apps.WorkForHireConfig',
 ]
-
+X_FRAME_OPTIONS = 'ALLOW-FORM'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

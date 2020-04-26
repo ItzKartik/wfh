@@ -12,9 +12,9 @@ import pytz
 from django.utils import timezone
 from tzlocal import get_localzone
 import smtplib
-import socket
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from django.views.generic import TemplateView
 
 
 @login_required(login_url='index')
@@ -75,11 +75,11 @@ def inbox_view(request):
         text = request.POST['i_text']
         file = request.FILES.get('i_file', False)
         d = direct_message.objects.create(
-                inbox_id=inbox_id,
-                user=user,
-                text=text,
-                attachments=file,
-                datetime=timezone.now()
+            inbox_id=inbox_id,
+            user=user,
+            text=text,
+            attachments=file,
+            datetime=timezone.now()
         )
         d.save()
         context = {

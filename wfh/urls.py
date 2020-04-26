@@ -19,6 +19,7 @@ from django.conf.urls import url, include
 from work_for_hire import views
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,7 +39,6 @@ urlpatterns = [
     re_path(r'^inbox/(?P<people_id>[\w-]+)/$', views.create_inbox_members, name='contact'),
     re_path(r'^chatting/(?P<order_id>[\w-]+)/$', views.chatting, name='chatting'),
     re_path(r'^delete_services/(?P<su_pk>[\w-]+)/$', views.delete_services, name='delete_services'),
-    # re_path(r'^update_services/(?P<su_pk>[\w-]+)/$', views.update_services, name='update_services'),
     re_path(r'^deliver/(?P<o_pk>[\w-]+)/$', views.deliver_success, name="delivery"),
     re_path(r'^order/(?P<srv_pk>[\w-]+)/$', views.order_services, name="purchase_services"),
     re_path(r'^index/(?P<u_id>[\w-]+)/$', views.services_show, name="services_show"),
@@ -46,7 +46,6 @@ urlpatterns = [
     re_path(r'^profile/(?P<u_id>[\w-]+)/$', views.portfolio_show, name="portfolio_show"),
     re_path(r'^create/(?P<pk_create>[\w-]+)/$', views.create_s, name='create_s'),
     re_path(r'^portfolio/(?P<up_id>[\w-]+)/$', views.portfolio, name='portfolio'),
-    # re_path(r'^messages/(?P<inbox_id>[\w-]+)$', views.message_view, name='message_view'),
 
 ]
 if settings.DEBUG:
