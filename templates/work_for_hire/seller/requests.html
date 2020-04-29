@@ -1,66 +1,31 @@
 {% extends 'work_for_hire/seller/base.html' %}
 {% block navbar %}
     {% load tz %}
-    <style>
-#purchase_services{
-    text-align: center;
-    display: none;
-    width: 25%;
-    border-radius: 20px;
-    top: 15%;
-    left: 35%;
-    padding: 30px;
-    position: absolute;
-    z-index: 2000;
-    color: #fff;
-    background: linear-gradient(#00ff95,#69ffaa,#fff);
-}
-@media screen and (max-width: 900px) {
-    #purchase_services{
-        width: 100%;
-        border-radius: 6%;
-        top: 30%;
-        left: 0%;
-        right: 0%;
-        padding: 40px;
-        position: absolute;
-        z-index: 2000;
-        color: #fff;
-        background: linear-gradient(#00ff95,#69ffaa,#fff);
-    }
-
-}
-    </style>
-
-     <div id="purchase_services" class="container require_submit text-center mx-auto" style="width: 20rem; color: black">
-         <div class="text-right mr-auto"><i onclick="sec_hide('.require_submit');" class="fas fa-times cls_inbox"></i></div>
-            <div class="text-center">
-                <form method="post" enctype="multipart/form-data" action="{% url 'buyer_rst_create' %}">{% csrf_token %}
-                    <div class="form-group">
-                        <label for="slt_category">Select Category</label>
-                        <select name="category" class="cat_field form-control" id="slt_category">
-                              <option>Video Editing</option>
-                              <option>Web Design</option>
-                              <option>Graphic Designing</option>
-                              <option>SEO</option>
-                              <option>Writing</option>
-                              <option>Etc.....</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>About Your Request :
-                            <input style="width: 16rem" name="rst" type="text" class="form-control" id="rst_field"/>
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label>Attach Files Here
-                            <input name="rstfile" id="file_field" type="file" class="form-control picture_uploader"/>
-                        </label>
-                    </div>
-                    <button type="submit" id="post_rst" class="btn btn-outline-primary">Submit</button>
-                </form>
+    <div class="col-md-12 text-right mx-auto post_rst_con" style="color: black; position: absolute; display: none; z-index: 5;">
+        <form class="col-md-4 mx-auto text-center" method="post" enctype="multipart/form-data" action="{% url 'buyer_rst_create' %}" style="background-image: linear-gradient(#00ff95,#69ffaa,#fff); border-radius: 20px; padding: 30px;">{% csrf_token %}
+            <div class="text-right mr-auto"><i onclick="sec_hide('.post_rst_con');" class="fas fa-times cls_inbox"></i></div>
+            <div class="form-group">
+                <label for="slt_category">Select Category</label>
+                <select name="category" class="cat_field form-control" id="slt_category">
+                      <option>Video Editing</option>
+                      <option>Web Design</option>
+                      <option>Graphic Designing</option>
+                      <option>SEO</option>
+                      <option>Writing</option>
+                      <option>Etc.....</option>
+                </select>
             </div>
-     </div>
+            <div class="form-group">
+                <label for="rst_field">About Your Request :</label>
+                <textarea rows="3" name="rst" class="form-control" id="rst_field"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="file_field">Attach Files Here</label>
+                    <input id="file_field" name="rstfile" type="file" class="form-control form-control-file picture_uploader"/>
+            </div>
+            <button type="submit" id="post_rst" class="btn btn-outline-primary">Submit</button>
+        </form>
+    </div>
         <div class="container text-center" style="background: white; padding: 40px; border-radius: 10px">
             <div class="text-center"><button id="post_form_open" class="btn btn-outline-primary">Post A Request</button></div><br><br>
             {% if b %}
@@ -78,11 +43,10 @@
     <script>
     $('#post_form_open').click(function () {
             hide('.overlay');
-            inout('#purchase_services');
-            outin('#purchase_services');
+            inout('.post_rst_con');
+            outin('.post_rst_con');
             show('.overlay');
     });
-    $('.context_btn').hide();
     </script>
 
 {% endblock %}

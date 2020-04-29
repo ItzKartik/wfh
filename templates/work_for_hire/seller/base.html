@@ -11,6 +11,7 @@
         <link href="{% static 'stylesheet/jquery-countryselector.min.css' %}" rel="stylesheet">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
         <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js" integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css?family=Lora|Lobster|Bungee Inline|Emblema One|Josefin Sans|Roboto|Dancing Script|Abril Fatface|&display=swap" rel="stylesheet">
         <style>
         div.overlay{
@@ -91,6 +92,9 @@
         .container-fluid{
             width: 90%;
         }
+        li{
+            list-style: none;
+        }
         </style>
     </head>
     <body>
@@ -106,7 +110,7 @@
                       <div class="col-sm services"><div class="nav-link"><a href="{% url 'seller_services' %}">Services<hr></a></div></div>
                       <div class="col-sm rst"><div class="nav-link"><a href="{% url 'buyer_rst_show' %}">Requests<hr></a></div></div>
                       <div class="col-sm settings"><div class="nav-link"><a href="{% url 'settings_view' %}">Settings<hr></a></div></div>
-                      <div class="col-sm report"><div class="nav-link "><a href="#">Report<hr></a></div></div>
+                      <div class="col-sm report"><div class="nav-link "><a href="{% url 'analytics' %}">Report<hr></a></div></div>
                       <div class="col-sm logout"><div class="nav-link "><a href="{% url 'logout' %}">Logout<hr></a></div></div>
                 {% else %}
                         <div class="col-sm-2 register"><div class="nav-link"><a href="#">Register<hr></a></div></div>

@@ -4,13 +4,13 @@
 {% block navbar %}
 
         {% if p_details or rst %}
-            <div class="rst_container container">
+            <div class="rst_container container" style="background: white; padding: 40px; border-radius: 10px">
                 {% for p in p_details %}
                     {% for r in rst %}
                         {% if p.category == r.category %}
                             {% if user.username == r.user %}
                             {% else %}
-                                <div class="container text-center" style="background: white; padding: 40px; border-radius: 10px">
+                                <div class="container text-center" style="">
                                         <div class="row" style="padding: 20px 0px">
                                             <span class="text-left"><i><u>{{ r.user|upper }}</u></i></span>
                                             <div class="text-left col rst_con">{{ r.rst }}</div>
@@ -29,11 +29,12 @@
                     {% endfor %}
                 {% endfor %}
         {% endif %}
+    <div class="no_rst_text text-center mx-auto"></div>
     </div>
     <script>
             $(document).ready(function () {
-               if($('.rst_con').html() === ''){
-                  hide('.rst_container');
+               if($(".rst_con").empty()){
+                    $('.no_rst_text').append('<h1>No Requests Are Available Right Now</h1>');
                 }
             });
     </script>

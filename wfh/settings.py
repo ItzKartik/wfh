@@ -38,7 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'work_for_hire.apps.WorkForHireConfig',
+    'rest_framework'
 ]
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.DjangoModelPermissions',
+#     )
+# }
+
 X_FRAME_OPTIONS = 'ALLOW-FORM'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

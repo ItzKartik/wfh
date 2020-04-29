@@ -177,9 +177,9 @@
         outin('#portfolio_form');
     });
     $(document).ready(function(){
-          {#setInterval(() => {#}
-          {#  active_cell();#}
-          {#  console.log('chnage');},3000);#}
+          setInterval(() => {
+            active_cell();
+            console.log('chnage');},3000);
       });
       function active_cell(){
           var cell1 = $('.fc').eq(0).hasClass('active');

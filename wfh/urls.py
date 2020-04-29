@@ -35,6 +35,8 @@ urlpatterns = [
     path('inbox_view/', views.inbox_view, name='inbox_view'),
     path('msg/', views.message_view, name='message_view'),
     path('settings/', views.settings_page, name='settings_view'),
+    path('analytics', TemplateView.as_view(template_name='work_for_hire/seller/report.html'), name='analytics'),
+    path('analytics_data', views.AnalyticsData.as_view(), name='analytics_data'),
 
     re_path(r'^inbox/(?P<people_id>[\w-]+)/$', views.create_inbox_members, name='contact'),
     re_path(r'^chatting/(?P<order_id>[\w-]+)/$', views.chatting, name='chatting'),
@@ -46,7 +48,7 @@ urlpatterns = [
     re_path(r'^profile/(?P<u_id>[\w-]+)/$', views.portfolio_show, name="portfolio_show"),
     re_path(r'^create/(?P<pk_create>[\w-]+)/$', views.create_s, name='create_s'),
     re_path(r'^portfolio/(?P<up_id>[\w-]+)/$', views.portfolio, name='portfolio'),
-
+    url(r'^api-auth/', include('rest_framework.urls'))
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

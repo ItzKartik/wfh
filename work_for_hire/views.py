@@ -3,18 +3,53 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import port_folio, p_service, orders, order_chat, buyer_request, direct_message, inbox_members
+from .models import port_folio, p_service, orders, order_chat, buyer_request, direct_message, inbox_members, report_services
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.urls import reverse_lazy, reverse
 from django.utils.datastructures import MultiValueDictKeyError
 import pytz
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from tzlocal import get_localzone
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.views.generic import TemplateView
+import matplotlib.pyplot as plt
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+
+
+class AnalyticsData(APIView):
+    def post(self, request):
+        whatuwant = request.POST['whatuwant']
+        print(whatuwant)
+        u = request.user.username
+        lbl = p_service.objects.filter(seller_id=u)
+        labels = []
+        data = []
+        for i in lbl:
+            labels.append(i.title)
+            print(labels)
+            r = report_services.objects.filter(report_id=i.id)
+            for k in r:
+                if whatuwant == 'clicks':
+                    data.append(k.clicks)
+                    print(data)
+                elif whatuwant == 'visits':
+                    data.append(k.visits)
+                    print(data)
+                else:
+                    data.append(k.orders)
+                    print(data)
+        data = {
+            "labels": labels,
+            "default": data,
+        }
+        return Response(data)
 
 
 @login_required(login_url='index')
@@ -272,8 +307,11 @@ def order_services(request, srv_pk):
 
 def services_pk(request, s_pk):
     if request.method == 'GET':
-        service_pk = p_service.objects.filter(id=s_pk)
-        return render(request, 'work_for_hire/gig_view.html', {'service_pk': service_pk})
+        service_pk = p_service.objects.get(id=s_pk)
+        r = report_services.objects.get(report_id=s_pk)
+        r.clicks += 1
+        r.save()
+        return render(request, 'work_for_hire/gig_view.html', {'s': service_pk})
     else:
         return HttpResponse('PK Does not matched !')
 
@@ -381,7 +419,7 @@ def create_s(request, pk_create):
         p_two = request.FILES['p_two']
         p_three = request.FILES['p_three']
         title = request.POST['title']
-        t = "I will do " + title
+        # t = "I will do " + title
         d_time = request.POST['d_time']
         category = request.POST['category']
         tags = request.POST['tags']
@@ -392,7 +430,7 @@ def create_s(request, pk_create):
         p.pic_first = pone
         p.pic_second = p_two
         p.pic_third = p_three
-        p.title = t
+        p.title = title
         p.delivery_time = d_time
         p.category = category
         p.tags = tags
@@ -405,4 +443,5 @@ def create_s(request, pk_create):
         p = p_service.objects.create(seller_id=pk_create)
         p.save()
         port = p.pk
+        report_services.objects.create(report_id=port)
         return HttpResponse(port)

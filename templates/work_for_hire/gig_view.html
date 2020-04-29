@@ -57,7 +57,6 @@
         </div>
     </div>
     <div class="container row order_container">
-        {% for s in service_pk %}
         <div class="text-center mx-auto justify-content-center box_info" style="width: 50%">
             <div class="container text-left">
                 <h1 style="display: none">{{ s.id }}</h1>
@@ -233,5 +232,4 @@
                             });
                         });
                     </script>
-{% endfor %}
 {% endblock %}

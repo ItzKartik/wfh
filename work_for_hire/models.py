@@ -61,6 +61,14 @@ class p_service(models.Model):
     published_date = models.BooleanField(default=0)
 
 
+class report_services(models.Model):
+    report_id = models.CharField(max_length=100, editable=False)
+    visits = models.IntegerField(null=True, blank=True, default=0)
+    clicks = models.IntegerField(null=True, blank=True, default=0)
+    orders = models.IntegerField(null=True, blank=True, default=0)
+    created_by = models.DateTimeField(auto_now=True)
+
+
 class port_folio(models.Model):
     user_id = models.CharField(max_length=40)
     picture = models.FileField(null=True)
